@@ -149,7 +149,7 @@ async def get_system_stats():
     """Get system statistics."""
     try:
         db = mongodb_manager.db
-        if not db:
+        if db is None:
             return {"error": "Database not connected"}
 
         total_artists = await db.artists.count_documents({})

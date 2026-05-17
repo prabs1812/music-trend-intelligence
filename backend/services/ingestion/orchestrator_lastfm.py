@@ -7,6 +7,7 @@ from backend.services.ingestion.lastfm_fetcher import lastfm_fetcher
 from backend.services.ingestion.musicbrainz_fetcher import musicbrainz_fetcher
 from backend.services.ingestion.reddit_fetcher import reddit_fetcher
 from backend.services.kafka_producer.producer import kafka_producer
+from backend.database.mongodb import mongodb_manager
 from backend.utils.config import settings
 from backend.utils.logger import app_logger
 
@@ -78,6 +79,34 @@ class IngestionOrchestrator:
                     app_logger.debug(f"Kafka publish skipped: {e}")
 
             app_logger.info(f"Processed {len(events)} Last.fm/MusicBrainz events")
+
+            # Save to MongoDB
+            if events and mongodb_manager.db is not None:
+                try:
+                    # Save artist data to artists collection
+                    for event in events:
+                        artist_doc = {
+                            "name": event["artist_name"],
+                            "mbid": event.get("mbid"),
+                            "popularity": event.get("popularity", 0),
+                            "genres": event.get("genres", []),
+                            "tags": event.get("tags", []),
+                            "country": event.get("country"),
+                            "type": event.get("type"),
+                            "playcount": event.get("playcount", 0),
+                            "listeners": event.get("listeners", 0),
+                            "last_updated": datetime.utcnow()
+                        }
+                        # Upsert artist (update if exists, insert if not)
+                        await mongodb_manager.db.artists.update_one(
+                            {"name": event["artist_name"]},
+                            {"$set": artist_doc},
+                            upsert=True
+                        )
+                    app_logger.info(f"Saved {len(events)} artists to MongoDB")
+                except Exception as e:
+                    app_logger.error(f"Error saving artists to MongoDB: {e}")
+
             return events
 
         except Exception as e:
@@ -146,6 +175,26 @@ class IngestionOrchestrator:
                     app_logger.debug(f"Kafka publish skipped: {e}")
 
             app_logger.info(f"Processed {len(events)} genre events")
+
+            # Save to MongoDB
+            if events and mongodb_manager.db is not None:
+                try:
+                    for event in events:
+                        genre_doc = {
+                            "name": event["genre_name"],
+                            "reach": event.get("reach", 0),
+                            "taggings": event.get("taggings", 0),
+                            "last_updated": datetime.utcnow()
+                        }
+                        await mongodb_manager.db.genres.update_one(
+                            {"name": event["genre_name"]},
+                            {"$set": genre_doc},
+                            upsert=True
+                        )
+                    app_logger.info(f"Saved {len(events)} genres to MongoDB")
+                except Exception as e:
+                    app_logger.error(f"Error saving genres to MongoDB: {e}")
+
             return events
 
         except Exception as e:
@@ -194,6 +243,15 @@ class IngestionOrchestrator:
         self.running = True
         app_logger.info(f"Starting ingestion orchestrator (interval: {self.interval}s)")
         app_logger.info("Using Last.fm + MusicBrainz APIs")
+
+        # Connect to MongoDB
+        if not mongodb_manager.is_connected():
+            try:
+                await mongodb_manager.connect()
+                app_logger.info("MongoDB connected for ingestion")
+            except Exception as e:
+                app_logger.error(f"Failed to connect to MongoDB: {e}")
+                raise
 
         # Connect Kafka producer (optional)
         try:
