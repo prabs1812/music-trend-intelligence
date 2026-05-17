@@ -70,8 +70,12 @@ class IngestionOrchestrator:
                 }
                 events.append(event)
 
-                # Publish to Kafka
-                kafka_producer.publish_spotify_event(event, key=artist.get("name"))
+                # Publish to Kafka (optional)
+                try:
+                    if kafka_producer.is_connected():
+                        kafka_producer.publish_spotify_event(event, key=artist.get("name"))
+                except Exception as e:
+                    app_logger.debug(f"Kafka publish skipped: {e}")
 
             app_logger.info(f"Processed {len(events)} Last.fm/MusicBrainz events")
             return events
@@ -103,8 +107,12 @@ class IngestionOrchestrator:
                 }
                 events.append(event)
 
-                # Publish to Kafka
-                kafka_producer.publish_reddit_event(event, key=post.get("id"))
+                # Publish to Kafka (optional)
+                try:
+                    if kafka_producer.is_connected():
+                        kafka_producer.publish_reddit_event(event, key=post.get("id"))
+                except Exception as e:
+                    app_logger.debug(f"Kafka publish skipped: {e}")
 
             app_logger.info(f"Processed {len(events)} Reddit events")
             return events
@@ -130,8 +138,12 @@ class IngestionOrchestrator:
                 }
                 events.append(event)
 
-                # Publish to Kafka (using youtube topic for now)
-                kafka_producer.publish_youtube_event(event, key=tag.get("name"))
+                # Publish to Kafka (optional - using youtube topic for now)
+                try:
+                    if kafka_producer.is_connected():
+                        kafka_producer.publish_youtube_event(event, key=tag.get("name"))
+                except Exception as e:
+                    app_logger.debug(f"Kafka publish skipped: {e}")
 
             app_logger.info(f"Processed {len(events)} genre events")
             return events
@@ -183,9 +195,13 @@ class IngestionOrchestrator:
         app_logger.info(f"Starting ingestion orchestrator (interval: {self.interval}s)")
         app_logger.info("Using Last.fm + MusicBrainz APIs")
 
-        # Connect Kafka producer
-        if not kafka_producer.is_connected():
-            kafka_producer.connect()
+        # Connect Kafka producer (optional)
+        try:
+            if not kafka_producer.is_connected():
+                kafka_producer.connect()
+                app_logger.info("Kafka producer connected")
+        except Exception as e:
+            app_logger.warning(f"Kafka connection failed (running without Kafka): {e}")
 
         try:
             while self.running:
