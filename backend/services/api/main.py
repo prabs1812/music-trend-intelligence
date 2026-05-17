@@ -28,7 +28,15 @@ async def lifespan(app: FastAPI):
         # Connect to databases
         app_logger.info("Connecting to databases...")
         await mongodb_manager.connect()
-        await redis_manager.connect()
+
+        # Connect to Redis (optional)
+        try:
+            app_logger.info("Connecting to Redis...")
+            await redis_manager.connect()
+            app_logger.info("Redis connected successfully")
+        except Exception as e:
+            app_logger.warning(f"Redis connection failed (running without Redis): {e}")
+            # Continue without Redis - caching will be disabled
 
         # Connect to Kafka (optional for Railway deployment)
         try:
@@ -64,7 +72,13 @@ async def lifespan(app: FastAPI):
     try:
         # Disconnect from databases
         await mongodb_manager.disconnect()
-        await redis_manager.disconnect()
+
+        # Disconnect from Redis (if connected)
+        try:
+            if redis_manager.is_connected():
+                await redis_manager.disconnect()
+        except Exception as e:
+            app_logger.warning(f"Error disconnecting Redis: {e}")
 
         # Disconnect from Kafka (if connected)
         try:
