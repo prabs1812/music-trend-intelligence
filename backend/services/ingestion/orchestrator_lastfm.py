@@ -1,0 +1,212 @@
+"""Data ingestion orchestrator using Last.fm and MusicBrainz APIs."""
+
+import asyncio
+from datetime import datetime
+from typing import Dict, Any, List
+from backend.services.ingestion.lastfm_fetcher import lastfm_fetcher
+from backend.services.ingestion.musicbrainz_fetcher import musicbrainz_fetcher
+from backend.services.ingestion.reddit_fetcher import reddit_fetcher
+from backend.services.kafka_producer.producer import kafka_producer
+from backend.utils.config import settings
+from backend.utils.logger import app_logger
+
+
+class IngestionOrchestrator:
+    """Orchestrates data ingestion from Last.fm, MusicBrainz, and Reddit."""
+
+    def __init__(self):
+        self.running = False
+        self.interval = settings.INGESTION_INTERVAL_SECONDS
+
+    async def fetch_lastfm_data(self) -> List[Dict[str, Any]]:
+        """Fetch and process Last.fm trending data."""
+        try:
+            app_logger.info("Starting Last.fm data fetch")
+
+            # Fetch top artists
+            artists = await lastfm_fetcher.fetch_top_artists(limit=30)
+
+            events = []
+            for artist in artists:
+                # Enrich with MusicBrainz metadata if MBID is available
+                mbid = artist.get("mbid")
+                enriched_data = {}
+
+                if mbid:
+                    app_logger.debug(f"Enriching {artist['name']} with MusicBrainz data")
+                    enriched_data = await musicbrainz_fetcher.enrich_artist_data(
+                        artist["name"],
+                        mbid
+                    )
+                    # Small delay to respect MusicBrainz rate limit
+                    await asyncio.sleep(1.1)
+                else:
+                    # Try to get MusicBrainz data by name
+                    enriched_data = await musicbrainz_fetcher.enrich_artist_data(
+                        artist["name"]
+                    )
+                    await asyncio.sleep(1.1)
+
+                # Combine Last.fm and MusicBrainz data
+                event = {
+                    "event_type": "artist_data",
+                    "artist_name": artist.get("name"),
+                    "mbid": enriched_data.get("mbid") or artist.get("mbid"),
+
+                    # Last.fm metrics
+                    "playcount": artist.get("playcount", 0),
+                    "listeners": artist.get("listeners", 0),
+
+                    # MusicBrainz metadata
+                    "genres": enriched_data.get("genres", []),
+                    "tags": enriched_data.get("tags", []),
+                    "country": enriched_data.get("country"),
+                    "type": enriched_data.get("type"),
+
+                    # Popularity calculation (based on listeners)
+                    "popularity": min(100, (artist.get("listeners", 0) / 100000) * 10),
+
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+                events.append(event)
+
+                # Publish to Kafka
+                kafka_producer.publish_spotify_event(event, key=artist.get("name"))
+
+            app_logger.info(f"Processed {len(events)} Last.fm/MusicBrainz events")
+            return events
+
+        except Exception as e:
+            app_logger.error(f"Error in Last.fm data fetch: {e}")
+            return []
+
+    async def fetch_reddit_data(self) -> List[Dict[str, Any]]:
+        """Fetch and process Reddit data."""
+        try:
+            app_logger.info("Starting Reddit data fetch")
+            posts = await reddit_fetcher.fetch_all_music_posts()
+
+            events = []
+            for post in posts:
+                event = {
+                    "event_type": "reddit_post",
+                    "post_id": post.get("id"),
+                    "title": post.get("title"),
+                    "content": post.get("selftext", ""),
+                    "subreddit": post.get("subreddit"),
+                    "score": post.get("score", 0),
+                    "upvote_ratio": post.get("upvote_ratio", 0),
+                    "num_comments": post.get("num_comments", 0),
+                    "url": post.get("permalink"),
+                    "created_utc": post.get("created_utc"),
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+                events.append(event)
+
+                # Publish to Kafka
+                kafka_producer.publish_reddit_event(event, key=post.get("id"))
+
+            app_logger.info(f"Processed {len(events)} Reddit events")
+            return events
+
+        except Exception as e:
+            app_logger.error(f"Error in Reddit data fetch: {e}")
+            return []
+
+    async def fetch_genre_data(self) -> List[Dict[str, Any]]:
+        """Fetch genre/tag data from Last.fm."""
+        try:
+            app_logger.info("Starting genre data fetch")
+            tags = await lastfm_fetcher.fetch_top_tags(limit=15)
+
+            events = []
+            for tag in tags:
+                event = {
+                    "event_type": "genre_data",
+                    "genre_name": tag.get("name"),
+                    "reach": tag.get("reach", 0),
+                    "taggings": tag.get("taggings", 0),
+                    "timestamp": datetime.utcnow().isoformat()
+                }
+                events.append(event)
+
+                # Publish to Kafka (using youtube topic for now)
+                kafka_producer.publish_youtube_event(event, key=tag.get("name"))
+
+            app_logger.info(f"Processed {len(events)} genre events")
+            return events
+
+        except Exception as e:
+            app_logger.error(f"Error in genre data fetch: {e}")
+            return []
+
+    async def run_ingestion_cycle(self):
+        """Run a single ingestion cycle from all sources."""
+        app_logger.info("=" * 60)
+        app_logger.info("Starting ingestion cycle (Last.fm + MusicBrainz + Reddit)")
+        app_logger.info("=" * 60)
+
+        start_time = datetime.utcnow()
+
+        # Fetch Last.fm data (includes MusicBrainz enrichment)
+        lastfm_results = await self.fetch_lastfm_data()
+
+        # Fetch Reddit data in parallel with genre data
+        reddit_results, genre_results = await asyncio.gather(
+            self.fetch_reddit_data(),
+            self.fetch_genre_data(),
+            return_exceptions=True
+        )
+
+        # Count successful events
+        total_events = 0
+        for result in [lastfm_results, reddit_results, genre_results]:
+            if isinstance(result, list):
+                total_events += len(result)
+            elif isinstance(result, Exception):
+                app_logger.error(f"Ingestion error: {result}")
+
+        elapsed = (datetime.utcnow() - start_time).total_seconds()
+
+        app_logger.info("=" * 60)
+        app_logger.info(f"Ingestion cycle completed in {elapsed:.2f}s")
+        app_logger.info(f"Total events processed: {total_events}")
+        app_logger.info("=" * 60)
+
+    async def start(self):
+        """Start the ingestion orchestrator."""
+        if self.running:
+            app_logger.warning("Orchestrator is already running")
+            return
+
+        self.running = True
+        app_logger.info(f"Starting ingestion orchestrator (interval: {self.interval}s)")
+        app_logger.info("Using Last.fm + MusicBrainz APIs")
+
+        # Connect Kafka producer
+        if not kafka_producer.is_connected():
+            kafka_producer.connect()
+
+        try:
+            while self.running:
+                await self.run_ingestion_cycle()
+
+                # Wait for next cycle
+                if self.running:
+                    app_logger.info(f"Waiting {self.interval}s until next cycle...")
+                    await asyncio.sleep(self.interval)
+
+        except Exception as e:
+            app_logger.error(f"Fatal error in orchestrator: {e}")
+            raise
+        finally:
+            self.running = False
+
+    def stop(self):
+        """Stop the ingestion orchestrator."""
+        app_logger.info("Stopping ingestion orchestrator")
+        self.running = False
+
+
+# Global orchestrator instance
+ingestion_orchestrator = IngestionOrchestrator()
