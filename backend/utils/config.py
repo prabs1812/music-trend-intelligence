@@ -30,6 +30,9 @@ class Settings(BaseSettings):
     REDIS_PASSWORD: str = ""
     REDIS_MAX_CONNECTIONS: int = 10
 
+    # Alternative: Railway Redis URL (if using REDIS_URL instead)
+    REDIS_URL: str = ""
+
     # Kafka
     KAFKA_BOOTSTRAP_SERVERS: str = "localhost:9092"
     KAFKA_CONSUMER_GROUP: str = "music-trend-consumers"

@@ -17,15 +17,25 @@ class RedisManager:
     async def connect(self):
         """Establish connection to Redis."""
         try:
-            app_logger.info(f"Connecting to Redis at {settings.REDIS_HOST}:{settings.REDIS_PORT}")
-
-            self.client = await redis.from_url(
-                f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}",
-                password=settings.REDIS_PASSWORD if settings.REDIS_PASSWORD else None,
-                encoding="utf-8",
-                decode_responses=True,
-                max_connections=settings.REDIS_MAX_CONNECTIONS,
-            )
+            # Try REDIS_URL first (Railway provides this)
+            if settings.REDIS_URL:
+                app_logger.info(f"Connecting to Redis using REDIS_URL")
+                self.client = await redis.from_url(
+                    settings.REDIS_URL,
+                    encoding="utf-8",
+                    decode_responses=True,
+                    max_connections=settings.REDIS_MAX_CONNECTIONS,
+                )
+            else:
+                # Fall back to individual host/port/password
+                app_logger.info(f"Connecting to Redis at {settings.REDIS_HOST}:{settings.REDIS_PORT}")
+                password = settings.REDIS_PASSWORD if settings.REDIS_PASSWORD else None
+                self.client = await redis.from_url(
+                    f"redis://:{password}@{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}" if password else f"redis://{settings.REDIS_HOST}:{settings.REDIS_PORT}/{settings.REDIS_DB}",
+                    encoding="utf-8",
+                    decode_responses=True,
+                    max_connections=settings.REDIS_MAX_CONNECTIONS,
+                )
 
             # Test connection
             await self.client.ping()
