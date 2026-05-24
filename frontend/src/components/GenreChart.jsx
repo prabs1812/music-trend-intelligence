@@ -62,27 +62,19 @@ const GenreChart = ({ timeRange, refreshKey }) => {
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 card-depth">
+    <div className="spotify-card">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-          <motion.span
-            className="text-2xl"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 2 }}
-          >
-            📊
-          </motion.span>
-          <span className="gradient-text">Genre Trends</span>
+          <span className="text-2xl">📊</span>
+          <span>Genre Trends</span>
         </h3>
-        <motion.button
+        <button
           onClick={fetchGenres}
-          className="text-purple-300 hover:text-white transition-all duration-300 text-xl"
+          className="text-[#b3b3b3] hover:text-white transition-colors text-xl"
           title="Refresh"
-          whileHover={{ rotate: 180, scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
         >
           🔄
-        </motion.button>
+        </button>
       </div>
 
       {genres.length === 0 ? (
@@ -123,14 +115,13 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                     </motion.span>
                   </div>
                 </div>
-                <div className="relative h-8 bg-gray-800/70 rounded-xl overflow-hidden border border-white/10 group-hover:border-white/30 transition-all">
+                <div className="relative h-8 bg-[#181818] rounded-xl overflow-hidden border border-[#282828]">
                   <motion.div
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-gray-600 via-gray-400 to-gray-600 shadow-lg"
+                    className="absolute top-0 left-0 h-full bg-spotify-green shadow-lg"
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(genre.popularity || 0, 100)}%` }}
                     transition={{ duration: 1, delay: index * 0.1, ease: "easeOut" }}
                   >
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-shimmer"></div>
                   </motion.div>
                   <div className="absolute inset-0 flex items-center justify-center">
                     <motion.span
