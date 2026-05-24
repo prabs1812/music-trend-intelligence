@@ -49,12 +49,12 @@ const Dashboard = () => {
               Dashboard
             </motion.h2>
             <motion.div
-              className="flex items-center space-x-3 px-4 py-2 rounded-full bg-black/30 border border-gray-600/30 backdrop-blur-sm"
+              className="flex items-center space-x-3 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-600/50 backdrop-blur-sm"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-sm text-gray-400 font-medium">WebSocket:</span>
+              <span className="text-sm text-gray-300 font-medium">WebSocket:</span>
               <div className={`flex items-center space-x-2 ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
                 <motion.div
                   className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-400 shadow-lg shadow-green-500/50' : 'bg-red-400 shadow-lg shadow-red-500/50'}`}
@@ -73,8 +73,8 @@ const Dashboard = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <span className="text-sm text-gray-400 font-medium">Time Range:</span>
-            <div className="flex space-x-2 bg-black/50 rounded-xl p-1.5 border border-white/20 backdrop-blur-sm">
+            <span className="text-sm text-gray-300 font-medium">Time Range:</span>
+            <div className="flex space-x-2 bg-gray-800/70 rounded-xl p-1.5 border border-white/20 backdrop-blur-sm">
               {['1h', '6h', '24h', '7d'].map((range, index) => (
                 <motion.button
                   key={range}

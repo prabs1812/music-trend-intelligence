@@ -104,11 +104,11 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                 whileHover={{ scale: 1.02, x: 5 }}
               >
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-white font-semibold capitalize group-hover:text-gray-300 transition">{genre.name}</span>
+                  <span className="text-white font-semibold capitalize group-hover:text-gray-200 transition">{genre.name}</span>
                   <div className="flex items-center space-x-3">
                     <motion.span
-                      className="text-gray-400 text-xs"
-                      whileHover={{ scale: 1.1, color: '#d0d0d0' }}
+                      className="text-gray-300 text-xs"
+                      whileHover={{ scale: 1.1, color: '#ffffff' }}
                     >
                       {genre.artist_count} artists
                     </motion.span>
@@ -123,7 +123,7 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                     </motion.span>
                   </div>
                 </div>
-                <div className="relative h-8 bg-black/50 rounded-xl overflow-hidden border border-white/10 group-hover:border-white/30 transition-all">
+                <div className="relative h-8 bg-gray-800/70 rounded-xl overflow-hidden border border-white/10 group-hover:border-white/30 transition-all">
                   <motion.div
                     className="absolute top-0 left-0 h-full bg-gradient-to-r from-gray-600 via-gray-400 to-gray-600 shadow-lg"
                     initial={{ width: 0 }}
@@ -145,7 +145,7 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                 </div>
                 {genre.trending_artists && genre.trending_artists.length > 0 && (
                   <motion.div
-                    className="text-xs text-gray-400 pl-2 font-medium"
+                    className="text-xs text-gray-300 pl-2 font-medium"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     transition={{ delay: index * 0.1 + 0.3 }}

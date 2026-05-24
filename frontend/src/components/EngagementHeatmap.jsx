@@ -126,10 +126,10 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="gradient-border bg-gradient-to-br from-black/50 to-gray-900/50 rounded-xl p-5 cursor-pointer relative overflow-hidden group"
+                className="gradient-border bg-gradient-to-br from-gray-800/70 to-gray-900/70 rounded-xl p-5 cursor-pointer relative overflow-hidden group"
               >
                 {/* Hover glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-gray-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/5 to-gray-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div className="flex items-center space-x-3 mb-4 relative z-10">
                   <motion.span

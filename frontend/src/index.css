@@ -92,15 +92,15 @@ code {
 
 /* Glass morphism effect */
 .glass-card {
-  background: rgba(20, 20, 20, 0.8);
+  background: rgba(30, 30, 30, 0.8);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.5);
 }
 
 .glass-card:hover {
-  background: rgba(30, 30, 30, 0.9);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(40, 40, 40, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.7);
   transform: translateY(-2px);
   transition: all 0.3s ease;
