@@ -33,6 +33,7 @@ async def get_trending_artists(
                     "rank": i + 1,
                     "id": str(doc["_id"]),
                     "name": doc["name"],
+                    "image_url": doc.get("image_url", ""),
                     "trend_score": doc.get("trend_score", 0),
                     "sentiment_score": doc.get("sentiment_score", 0),
                     "popularity": doc.get("popularity", 0),
