@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Navigation from './components/Navigation';
+import ParticleBackground from './components/ParticleBackground';
+import AnimatedCounter from './components/AnimatedCounter';
 import Home from './pages/Home';
 import Artists from './pages/Artists';
 import Genres from './pages/Genres';
@@ -63,32 +65,41 @@ function App() {
 
   return (
     <Router>
-      <div className="min-h-screen">
+      <div className="min-h-screen relative">
+        {/* Particle Background */}
+        <ParticleBackground density={40} speed={0.3} color="#a855f7" />
+
         {/* Navigation */}
         <Navigation />
 
         {/* Stats Bar */}
         {systemStats && (
-          <div className="glass-card border-b border-purple-500/20">
-            <div className="container mx-auto px-4 py-3">
-              <div className="flex items-center justify-between text-sm">
-                <div className="flex items-center space-x-6">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-purple-200/70">Artists:</span>
-                    <span className="text-white font-bold">{systemStats.total_artists?.toLocaleString() || 0}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-purple-200/70">Trends:</span>
-                    <span className="text-white font-bold">{systemStats.total_trends?.toLocaleString() || 0}</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-purple-200/70">Anomalies:</span>
-                    <span className="text-white font-bold">{systemStats.total_anomalies?.toLocaleString() || 0}</span>
-                  </div>
+          <div className="glass-card border-b border-purple-500/20 relative z-10">
+            <div className="container mx-auto px-4 py-4">
+              <div className="flex items-center justify-between flex-wrap gap-4">
+                <div className="flex items-center space-x-4">
+                  <AnimatedCounter
+                    value={systemStats.total_artists || 0}
+                    label="Artists"
+                    icon="🎤"
+                    gradient="from-purple-400 to-pink-400"
+                  />
+                  <AnimatedCounter
+                    value={systemStats.total_trends || 0}
+                    label="Trends"
+                    icon="📈"
+                    gradient="from-blue-400 to-cyan-400"
+                  />
+                  <AnimatedCounter
+                    value={systemStats.total_anomalies || 0}
+                    label="Anomalies"
+                    icon="🚨"
+                    gradient="from-red-400 to-orange-400"
+                  />
                 </div>
-                <div className="flex items-center space-x-2 px-3 py-1 rounded-full bg-green-500/10 border border-green-500/30">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
-                  <span className="text-green-300 font-medium text-xs">Live</span>
+                <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 backdrop-blur-sm">
+                  <div className="w-2.5 h-2.5 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
+                  <span className="text-green-300 font-medium text-sm">Live</span>
                 </div>
               </div>
             </div>
@@ -96,7 +107,7 @@ function App() {
         )}
 
         {/* Main Content */}
-        <main className="container mx-auto px-4 py-8">
+        <main className="container mx-auto px-4 py-8 relative z-10">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/artists" element={<Artists />} />

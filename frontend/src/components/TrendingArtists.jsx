@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { api } from '../services/api';
 
 const TrendingArtists = ({ timeRange, refreshKey }) => {
@@ -81,44 +82,68 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6 h-full">
+    <div className="glass-card rounded-2xl p-6 h-full card-depth">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-          <span className="text-2xl">🎤</span>
+          <motion.span
+            className="text-2xl"
+            animate={{ rotate: [0, -10, 10, -10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+          >
+            🎤
+          </motion.span>
           <span className="gradient-text">Trending Artists</span>
         </h3>
-        <button
+        <motion.button
           onClick={fetchTrendingArtists}
-          className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
+          className="text-purple-300 hover:text-white transition-all duration-300 text-xl"
           title="Refresh"
+          whileHover={{ rotate: 180, scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           🔄
-        </button>
+        </motion.button>
       </div>
 
       <div className="space-y-3 max-h-[700px] overflow-y-auto pr-2">
         {artists.length === 0 ? (
           <div className="text-center py-16">
-            <div className="text-6xl mb-4 opacity-50">🎵</div>
+            <motion.div
+              className="text-6xl mb-4 opacity-50"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              🎵
+            </motion.div>
             <p className="text-purple-200/60">No trending artists found</p>
           </div>
         ) : (
           artists.map((artist, index) => (
-            <div
+            <motion.div
               key={artist.id || index}
-              className="group flex items-center space-x-4 p-4 bg-gradient-to-r from-slate-700/30 to-slate-800/30 rounded-xl hover:from-slate-700/50 hover:to-slate-800/50 border border-purple-500/10 hover:border-purple-500/30 transition-all duration-300 cursor-pointer transform hover:scale-[1.02]"
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.3, delay: index * 0.05 }}
+              whileHover={{ scale: 1.02, x: 5 }}
+              className="group flex items-center space-x-4 p-4 gradient-border bg-gradient-to-r from-slate-700/30 to-slate-800/30 rounded-xl hover:from-slate-700/50 hover:to-slate-800/50 cursor-pointer relative overflow-hidden"
             >
+              {/* Hover glow effect */}
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-pink-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               {/* Rank */}
-              <div className="flex-shrink-0 w-10 text-center">
-                <span className={`font-bold text-lg ${
-                  index < 3 ? 'text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500' : 'text-purple-300/70'
-                }`}>
+              <div className="flex-shrink-0 w-10 text-center relative z-10">
+                <motion.span
+                  className={`font-bold text-lg ${
+                    index < 3 ? 'text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-orange-500 animate-glow-pulse' : 'text-purple-300/70'
+                  }`}
+                  animate={index < 3 ? { scale: [1, 1.1, 1] } : {}}
+                  transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+                >
                   #{index + 1}
-                </span>
+                </motion.span>
               </div>
 
               {/* Artist Info */}
-              <div className="flex-1 min-w-0">
+              <div className="flex-1 min-w-0 relative z-10">
                 <div className="flex items-center space-x-2 mb-1">
                   <h4 className="text-white font-semibold truncate group-hover:text-purple-300 transition">
                     {artist.name}
@@ -148,17 +173,23 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
               </div>
 
               {/* Metrics */}
-              <div className="flex-shrink-0 text-right text-xs space-y-1">
-                <div className="flex items-center justify-end space-x-1 text-purple-200/60">
+              <div className="flex-shrink-0 text-right text-xs space-y-1 relative z-10">
+                <motion.div
+                  className="flex items-center justify-end space-x-1 text-purple-200/60"
+                  whileHover={{ scale: 1.1, color: '#c084fc' }}
+                >
                   <span>💬</span>
                   <span>{artist.reddit_mentions || 0}</span>
-                </div>
-                <div className="flex items-center justify-end space-x-1 text-purple-200/60">
+                </motion.div>
+                <motion.div
+                  className="flex items-center justify-end space-x-1 text-purple-200/60"
+                  whileHover={{ scale: 1.1, color: '#c084fc' }}
+                >
                   <span>📺</span>
                   <span>{artist.youtube_mentions || 0}</span>
-                </div>
+                </motion.div>
               </div>
-            </div>
+            </motion.div>
           ))
         )}
       </div>

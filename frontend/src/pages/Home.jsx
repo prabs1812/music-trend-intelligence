@@ -1,34 +1,60 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import TrendingArtists from '../components/TrendingArtists';
 import GenreChart from '../components/GenreChart';
+import EnhancedCard from '../components/EnhancedCard';
 
 const Home = () => {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <div className="glass-card rounded-2xl p-8 text-center">
-        <h1 className="text-4xl font-bold gradient-text mb-4">
-          Welcome to Music Trend Intelligence
-        </h1>
-        <p className="text-purple-200/80 text-lg mb-6">
-          Real-time analytics and insights from the music industry
-        </p>
-        <div className="flex justify-center gap-4">
-          <Link
-            to="/artists"
-            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-medium shadow-lg shadow-purple-500/50 transition-all duration-300 transform hover:scale-105"
+      <EnhancedCard hover={true} glow={true} gradient="from-purple-500/20 to-pink-500/20">
+        <div className="text-center">
+          <motion.h1
+            className="text-5xl font-bold gradient-text mb-4"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
           >
-            Explore Artists
-          </Link>
-          <Link
-            to="/genres"
-            className="px-6 py-3 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-purple-500/30 transition-all duration-300 transform hover:scale-105"
+            Welcome to Music Trend Intelligence
+          </motion.h1>
+          <motion.p
+            className="text-purple-200/80 text-lg mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            View Genres
-          </Link>
+            Real-time analytics and insights from the music industry
+          </motion.p>
+          <motion.div
+            className="flex justify-center gap-4"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <Link to="/artists">
+              <motion.button
+                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium shadow-lg shadow-purple-500/50 relative overflow-hidden group"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <span className="relative z-10">Explore Artists</span>
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </motion.button>
+            </Link>
+            <Link to="/genres">
+              <motion.button
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-purple-500/30"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                View Genres
+              </motion.button>
+            </Link>
+          </motion.div>
         </div>
-      </div>
+      </EnhancedCard>
 
       {/* Quick Overview Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -63,23 +89,45 @@ const Home = () => {
 
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <Link to="/analytics" className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-          <div className="text-4xl mb-3">📊</div>
-          <h3 className="text-xl font-bold text-white mb-2">Analytics</h3>
-          <p className="text-purple-200/70">View sentiment trends and engagement metrics</p>
+        <Link to="/analytics">
+          <EnhancedCard hover={true} glow={true} gradient="from-blue-500/10 to-cyan-500/10" delay={0}>
+            <motion.div
+              className="text-4xl mb-3"
+              animate={{ y: [0, -5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              📊
+            </motion.div>
+            <h3 className="text-xl font-bold text-white mb-2">Analytics</h3>
+            <p className="text-purple-200/70">View sentiment trends and engagement metrics</p>
+          </EnhancedCard>
         </Link>
 
-        <Link to="/anomalies" className="glass-card rounded-2xl p-6 hover:scale-105 transition-transform duration-300">
-          <div className="text-4xl mb-3">🚨</div>
-          <h3 className="text-xl font-bold text-white mb-2">Anomalies</h3>
-          <p className="text-purple-200/70">Monitor unusual patterns and alerts</p>
+        <Link to="/anomalies">
+          <EnhancedCard hover={true} glow={true} gradient="from-red-500/10 to-orange-500/10" delay={0.1}>
+            <motion.div
+              className="text-4xl mb-3"
+              animate={{ rotate: [0, -10, 10, -10, 0] }}
+              transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+            >
+              🚨
+            </motion.div>
+            <h3 className="text-xl font-bold text-white mb-2">Anomalies</h3>
+            <p className="text-purple-200/70">Monitor unusual patterns and alerts</p>
+          </EnhancedCard>
         </Link>
 
-        <div className="glass-card rounded-2xl p-6">
-          <div className="text-4xl mb-3">🔥</div>
+        <EnhancedCard hover={false} glow={false} gradient="from-green-500/10 to-emerald-500/10" delay={0.2}>
+          <motion.div
+            className="text-4xl mb-3"
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            🔥
+          </motion.div>
           <h3 className="text-xl font-bold text-white mb-2">Live Updates</h3>
           <p className="text-purple-200/70">Real-time data refreshed every 5 minutes</p>
-        </div>
+        </EnhancedCard>
       </div>
     </div>
   );
