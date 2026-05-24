@@ -87,7 +87,8 @@ class LastFmFetcher:
                     "mbid": artist_data.get("mbid"),  # MusicBrainz ID
                     "playcount": int(artist_data.get("playcount", 0)),
                     "listeners": int(artist_data.get("listeners", 0)),
-                    "url": artist_data.get("url")
+                    "url": artist_data.get("url"),
+                    "image": artist_data.get("image", [])  # Array of image objects
                 })
 
             app_logger.info(f"Fetched {len(artists)} top artists from Last.fm")

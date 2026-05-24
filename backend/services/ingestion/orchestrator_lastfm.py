@@ -20,6 +20,24 @@ class IngestionOrchestrator:
         self.running = False
         self.interval = settings.INGESTION_INTERVAL_SECONDS
 
+    def _get_artist_image(self, artist: Dict[str, Any]) -> str:
+        """
+        Extract artist image URL from Last.fm data.
+        Returns the largest available image or empty string.
+        """
+        images = artist.get("image", [])
+        if not images:
+            return ""
+
+        # Last.fm returns images in multiple sizes
+        # Priority: extralarge > large > medium > small
+        for img in reversed(images):  # Reversed to get largest first
+            url = img.get("#text", "")
+            if url and url.strip():
+                return url
+
+        return ""
+
     async def fetch_lastfm_data(self) -> List[Dict[str, Any]]:
         """Fetch and process Last.fm trending data."""
         try:
@@ -59,6 +77,9 @@ class IngestionOrchestrator:
                     "playcount": artist.get("playcount", 0),
                     "listeners": artist.get("listeners", 0),
 
+                    # Artist image from Last.fm
+                    "image_url": self._get_artist_image(artist),
+
                     # MusicBrainz metadata
                     "genres": enriched_data.get("genres", []),
                     "tags": enriched_data.get("tags", []),
@@ -90,6 +111,7 @@ class IngestionOrchestrator:
                             "name": event["artist_name"],
                             "mbid": event.get("mbid"),
                             "popularity": event.get("popularity", 0),
+                            "image_url": event.get("image_url", ""),
                             "genres": event.get("genres", []),
                             "tags": event.get("tags", []),
                             "country": event.get("country"),
