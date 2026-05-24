@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import HeroSection from './HeroSection';
 import TrendingArtists from './TrendingArtists';
-import GenreChart from './GenreChart';
-import SentimentGraph from './SentimentGraph';
-import AnomalyAlerts from './AnomalyAlerts';
-import EngagementHeatmap from './EngagementHeatmap';
-import EnhancedCard from './EnhancedCard';
-import { api } from '../services/api';
+import LiveAnalytics from './LiveAnalytics';
+import GenreHeatmap from './GenreHeatmap';
+import AIPredictions from './AIPredictions';
+import ViralSongsTable from './ViralSongsTable';
 import { dashboardWebSocket } from '../services/websocket';
 import { useWebSocket } from '../hooks/useWebSocket';
 
@@ -36,116 +35,104 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Controls */}
-      <EnhancedCard hover={false} glow={false}>
+    <div className="min-h-screen">
+      {/* Hero Section */}
+      <HeroSection />
+
+      {/* Controls Bar */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
+        className="glass-card mb-8"
+      >
         <div className="flex items-center justify-between flex-wrap gap-4">
-          <div className="flex items-center space-x-6">
-            <motion.h2
-              className="text-2xl font-bold gradient-text"
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-            >
-              Dashboard
-            </motion.h2>
-            <motion.div
-              className="flex items-center space-x-3 px-4 py-2 rounded-full bg-gray-800/50 border border-gray-600/50 backdrop-blur-sm"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.2 }}
-            >
-              <span className="text-sm text-gray-300 font-medium">WebSocket:</span>
-              <div className={`flex items-center space-x-2 ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
+          {/* Connection Status */}
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-3 px-4 py-2 rounded-xl bg-white/5">
+              <span className="text-sm text-muted font-medium">Status:</span>
+              <div className={`flex items-center gap-2 ${isConnected ? 'text-cyan' : 'text-pink'}`}>
                 <motion.div
-                  className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-400 shadow-lg shadow-green-500/50' : 'bg-red-400 shadow-lg shadow-red-500/50'}`}
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className={`w-2 h-2 rounded-full ${isConnected ? 'bg-cyan' : 'bg-pink'}`}
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ duration: 2, repeat: Infinity }}
                 />
-                <span className="text-sm font-semibold">{isConnected ? 'Connected' : 'Disconnected'}</span>
+                <span className="text-sm font-semibold">{isConnected ? 'Live' : 'Offline'}</span>
               </div>
-            </motion.div>
+            </div>
           </div>
 
           {/* Time Range Selector */}
-          <motion.div
-            className="flex items-center space-x-4"
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <span className="text-sm text-gray-300 font-medium">Time Range:</span>
-            <div className="flex space-x-2 bg-gray-800/70 rounded-xl p-1.5 border border-white/20 backdrop-blur-sm">
-              {['1h', '6h', '24h', '7d'].map((range, index) => (
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-muted font-medium">Time Range:</span>
+            <div className="flex gap-2 bg-white/5 rounded-xl p-1">
+              {['1h', '6h', '24h', '7d'].map((range) => (
                 <motion.button
                   key={range}
                   onClick={() => handleTimeRangeChange(range)}
-                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
-                    timeRange === range
-                      ? 'bg-gradient-to-r from-gray-600 to-gray-800 text-white shadow-lg shadow-black/50'
-                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
-                  }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 + index * 0.05 }}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    timeRange === range
+                      ? 'bg-gradient-to-r from-purple to-cyan text-white shadow-lg'
+                      : 'text-muted hover:text-white hover:bg-white/5'
+                  }`}
                 >
                   {range}
                 </motion.button>
               ))}
             </div>
-          </motion.div>
+          </div>
         </div>
-      </EnhancedCard>
-
-      {/* Anomaly Alerts - Full Width */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
-      >
-        <AnomalyAlerts refreshKey={refreshKey} />
       </motion.div>
 
-      {/* Main Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Trending Artists - Takes 1 column */}
+      {/* Main Content Grid */}
+      <div className="space-y-8">
+        {/* Trending Artists - Full Width */}
         <motion.div
-          className="lg:col-span-1"
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.6 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
         >
           <TrendingArtists timeRange={timeRange} refreshKey={refreshKey} />
         </motion.div>
 
-        {/* Charts - Takes 2 columns */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* Live Analytics + Genre Heatmap - Side by Side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           <motion.div
-            initial={{ opacity: 0, x: 20 }}
+            initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.7 }}
+            transition={{ delay: 0.5 }}
           >
-            <GenreChart timeRange={timeRange} refreshKey={refreshKey} />
+            <LiveAnalytics />
           </motion.div>
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.8 }}
+            transition={{ delay: 0.6 }}
           >
-            <SentimentGraph timeRange={timeRange} refreshKey={refreshKey} />
+            <GenreHeatmap />
           </motion.div>
         </div>
-      </div>
 
-      {/* Engagement Heatmap - Full Width */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
-      >
-        <EngagementHeatmap timeRange={timeRange} refreshKey={refreshKey} />
-      </motion.div>
+        {/* AI Predictions - Full Width */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
+        >
+          <AIPredictions />
+        </motion.div>
+
+        {/* Viral Songs Table - Full Width */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          <ViralSongsTable />
+        </motion.div>
+      </div>
     </div>
   );
 };
