@@ -1,4 +1,4 @@
-"""Data ingestion orchestrator using Last.fm and MusicBrainz APIs."""
+"""Data ingestion orchestrator using Last.fm, MusicBrainz, YouTube APIs."""
 
 import asyncio
 from datetime import datetime
@@ -6,6 +6,7 @@ from typing import Dict, Any, List
 from backend.services.ingestion.lastfm_fetcher import lastfm_fetcher
 from backend.services.ingestion.musicbrainz_fetcher import musicbrainz_fetcher
 from backend.services.ingestion.reddit_fetcher import reddit_fetcher
+from backend.services.ingestion.youtube_fetcher import youtube_fetcher
 from backend.services.kafka_producer.producer import kafka_producer
 from backend.database.mongodb import mongodb_manager
 from backend.utils.config import settings
@@ -13,7 +14,7 @@ from backend.utils.logger import app_logger
 
 
 class IngestionOrchestrator:
-    """Orchestrates data ingestion from Last.fm, MusicBrainz, and Reddit."""
+    """Orchestrates data ingestion from Last.fm, MusicBrainz, Reddit, and YouTube."""
 
     def __init__(self):
         self.running = False
@@ -204,13 +205,35 @@ class IngestionOrchestrator:
     async def run_ingestion_cycle(self):
         """Run a single ingestion cycle from all sources."""
         app_logger.info("=" * 60)
-        app_logger.info("Starting ingestion cycle (Last.fm + MusicBrainz + Reddit)")
+        app_logger.info("Starting ingestion cycle (Last.fm + MusicBrainz + YouTube)")
         app_logger.info("=" * 60)
 
         start_time = datetime.utcnow()
 
         # Fetch Last.fm data (includes MusicBrainz enrichment)
         lastfm_results = await self.fetch_lastfm_data()
+
+        # Get artist names for YouTube search
+        artist_names = [event.get("artist_name") for event in lastfm_results if event.get("artist_name")]
+
+        # Fetch YouTube data for these artists
+        youtube_mentions = {}
+        if artist_names and settings.YOUTUBE_API_KEY:
+            try:
+                app_logger.info("Fetching YouTube data for artists...")
+                youtube_mentions = await self.fetch_youtube_data(artist_names)
+
+                # Update artist documents with YouTube mentions
+                if youtube_mentions and mongodb_manager.db is not None:
+                    for artist_name, mention_count in youtube_mentions.items():
+                        await mongodb_manager.db.artists.update_one(
+                            {"name": artist_name},
+                            {"$set": {"youtube_mentions": mention_count}},
+                            upsert=False
+                        )
+                    app_logger.info(f"Updated {len(youtube_mentions)} artists with YouTube data")
+            except Exception as e:
+                app_logger.error(f"YouTube fetch failed: {e}")
 
         # Fetch Reddit data in parallel with genre data
         reddit_results, genre_results = await asyncio.gather(
@@ -220,8 +243,8 @@ class IngestionOrchestrator:
         )
 
         # Count successful events
-        total_events = 0
-        for result in [lastfm_results, reddit_results, genre_results]:
+        total_events = len(lastfm_results) + len(youtube_mentions)
+        for result in [reddit_results, genre_results]:
             if isinstance(result, list):
                 total_events += len(result)
             elif isinstance(result, Exception):
@@ -243,6 +266,43 @@ class IngestionOrchestrator:
             app_logger.info("Trend scoring completed")
         except Exception as e:
             app_logger.error(f"Trend scoring failed: {e}")
+
+    async def fetch_youtube_data(self, artist_names: List[str]) -> Dict[str, int]:
+        """
+        Fetch YouTube data for artists.
+        Returns dict mapping artist_name -> mention_count (video count).
+        """
+        try:
+            app_logger.info(f"Starting YouTube data fetch for {len(artist_names)} artists")
+
+            artist_mentions = {}
+
+            # Search for each artist on YouTube (limit to conserve quota)
+            for artist_name in artist_names[:10]:  # Limit to 10 artists
+                try:
+                    # Search for artist music videos
+                    query = f"{artist_name} music official"
+                    videos = await youtube_fetcher.search_videos(query, max_results=5)
+
+                    if videos:
+                        # Count as mentions (number of recent videos found)
+                        artist_mentions[artist_name] = len(videos)
+
+                        app_logger.debug(f"{artist_name}: {len(videos)} videos found")
+
+                    # Small delay to respect rate limits
+                    await asyncio.sleep(0.5)
+
+                except Exception as e:
+                    app_logger.error(f"Error fetching YouTube data for {artist_name}: {e}")
+                    continue
+
+            app_logger.info(f"Fetched YouTube data for {len(artist_mentions)} artists")
+            return artist_mentions
+
+        except Exception as e:
+            app_logger.error(f"Error in YouTube data fetch: {e}")
+            return {}
 
     async def start(self):
         """Start the ingestion orchestrator."""
