@@ -73,7 +73,7 @@ const Dashboard = () => {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <span className="text-sm text-purple-200/70 font-medium">Time Range:</span>
+            <span className="text-sm text-gray-400 font-medium">Time Range:</span>
             <div className="flex space-x-2 bg-black/50 rounded-xl p-1.5 border border-white/20 backdrop-blur-sm">
               {['1h', '6h', '24h', '7d'].map((range, index) => (
                 <motion.button

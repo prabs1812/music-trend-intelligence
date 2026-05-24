@@ -126,10 +126,10 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, delay: index * 0.1 }}
                 whileHover={{ scale: 1.05, y: -5 }}
-                className="gradient-border bg-gradient-to-br from-slate-700/50 to-slate-800/50 rounded-xl p-5 cursor-pointer relative overflow-hidden group"
+                className="gradient-border bg-gradient-to-br from-black/50 to-gray-900/50 rounded-xl p-5 cursor-pointer relative overflow-hidden group"
               >
                 {/* Hover glow */}
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-pink-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-gray-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
 
                 <div className="flex items-center space-x-3 mb-4 relative z-10">
                   <motion.span
@@ -191,7 +191,7 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
                   <div className="pt-3 border-t border-gray-600">
                     <div className="flex items-center justify-between">
                       <span className="text-gray-400 text-sm">Avg Engagement</span>
-                      <span className="text-blue-400 font-bold">
+                      <span className="text-gray-200 font-bold">
                         {formatNumber(data.avg_engagement)}
                       </span>
                     </div>
@@ -202,7 +202,7 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
                 <div className="mt-4 relative z-10">
                   <div className="h-2 bg-gray-600 rounded-full overflow-hidden">
                     <motion.div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                      className="h-full bg-gradient-to-r from-gray-400 to-gray-600"
                       initial={{ width: 0 }}
                       animate={{
                         width: `${Math.min((data.avg_engagement / 10000) * 100, 100)}%`

@@ -60,13 +60,13 @@ const AnomalyAlerts = ({ refreshKey }) => {
   const getAlertLevelColor = (level) => {
     switch (level) {
       case 'critical':
-        return 'from-red-600 to-red-800 border-red-500/50 shadow-red-500/30';
+        return 'from-gray-800 to-black border-white/50 shadow-white/30';
       case 'high':
-        return 'from-orange-600 to-orange-800 border-orange-500/50 shadow-orange-500/30';
+        return 'from-gray-700 to-gray-900 border-white/50 shadow-white/30';
       case 'medium':
-        return 'from-yellow-600 to-yellow-800 border-yellow-500/50 shadow-yellow-500/30';
+        return 'from-gray-600 to-gray-800 border-white/50 shadow-white/30';
       default:
-        return 'from-blue-600 to-blue-800 border-blue-500/50 shadow-blue-500/30';
+        return 'from-gray-500 to-gray-700 border-white/50 shadow-white/30';
     }
   };
 
@@ -148,7 +148,7 @@ const AnomalyAlerts = ({ refreshKey }) => {
         </h3>
         <div className="flex items-center space-x-3">
           <motion.span
-            className="text-sm text-purple-200/70 font-medium"
+            className="text-sm text-gray-400 font-medium"
             animate={{ scale: [1, 1.1, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           >
@@ -180,8 +180,8 @@ const AnomalyAlerts = ({ refreshKey }) => {
           >
             ✅
           </motion.div>
-          <p className="text-purple-200/60 font-medium">No active anomalies detected</p>
-          <p className="text-purple-200/40 text-sm mt-2">All systems running smoothly</p>
+          <p className="text-gray-300 font-medium">No active anomalies detected</p>
+          <p className="text-gray-500 text-sm mt-2">All systems running smoothly</p>
         </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -201,7 +201,7 @@ const AnomalyAlerts = ({ refreshKey }) => {
                 {/* Pulse effect for critical */}
                 {anomaly.alert_level === 'critical' && !anomaly.acknowledged && (
                   <motion.div
-                    className="absolute inset-0 bg-red-500/20 rounded-xl"
+                    className="absolute inset-0 bg-white/20 rounded-xl"
                     animate={{ opacity: [0, 0.5, 0] }}
                     transition={{ duration: 2, repeat: Infinity }}
                   />
@@ -258,7 +258,7 @@ const AnomalyAlerts = ({ refreshKey }) => {
                     whileHover={{ x: 5 }}
                   >
                     <span>Deviation:</span>
-                    <span className="text-yellow-300 font-bold">
+                    <span className="text-gray-200 font-bold">
                       {anomaly.deviation_percentage?.toFixed(1)}%
                     </span>
                   </motion.div>
