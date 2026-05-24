@@ -32,44 +32,23 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8, y: 10 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          transition={{ duration: 0.2 }}
-          className="glass-card rounded-xl p-4 shadow-2xl border border-white/40 backdrop-blur-xl relative"
-        >
-          <p className="text-white font-bold mb-3 text-sm border-b border-white/30 pb-2">{data.timestamp}</p>
-          <div className="space-y-2 text-sm">
-            <motion.p
-              className="text-green-400 font-semibold flex items-center justify-between"
-              whileHover={{ scale: 1.05, x: 5 }}
-            >
+        <div className="tooltip">
+          <p className="text-white font-bold mb-2 text-sm">{data.timestamp}</p>
+          <div className="space-y-1 text-xs">
+            <p className="text-spotify-green font-semibold flex items-center justify-between">
               <span>😊 Positive:</span>
-              <span className="font-bold">{data.positive_count}</span>
-            </motion.p>
-            <motion.p
-              className="text-gray-400 font-semibold flex items-center justify-between"
-              whileHover={{ scale: 1.05, x: 5 }}
-            >
+              <span className="font-bold ml-4">{data.positive_count}</span>
+            </p>
+            <p className="text-[#b3b3b3] font-semibold flex items-center justify-between">
               <span>😐 Neutral:</span>
-              <span className="font-bold">{data.neutral_count}</span>
-            </motion.p>
-            <motion.p
-              className="text-red-400 font-semibold flex items-center justify-between"
-              whileHover={{ scale: 1.05, x: 5 }}
-            >
+              <span className="font-bold ml-4">{data.neutral_count}</span>
+            </p>
+            <p className="text-red-400 font-semibold flex items-center justify-between">
               <span>😞 Negative:</span>
-              <span className="font-bold">{data.negative_count}</span>
-            </motion.p>
-            <div className="pt-2 mt-2 border-t border-white/20">
-              <p className="text-gray-300 font-bold flex items-center justify-between">
-                <span>Average:</span>
-                <span>{data.avg_sentiment?.toFixed(3)}</span>
-              </p>
-            </div>
+              <span className="font-bold ml-4">{data.negative_count}</span>
+            </p>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-gray-400/10 rounded-xl blur-xl -z-10" />
-        </motion.div>
+        </div>
       );
     }
     return null;
@@ -113,27 +92,19 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
   const chartData = sentimentData?.data_points || [];
 
   return (
-    <div className="glass-card rounded-2xl p-6 card-depth">
+    <div className="spotify-card">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-          <motion.span
-            className="text-2xl"
-            animate={{ rotate: [0, -10, 10, -10, 0] }}
-            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
-          >
-            💭
-          </motion.span>
-          <span className="gradient-text">Sentiment Analysis</span>
+          <span className="text-2xl">💭</span>
+          <span>Sentiment Analysis</span>
         </h3>
-        <motion.button
+        <button
           onClick={fetchSentimentData}
-          className="text-purple-300 hover:text-white transition-all duration-300 text-xl"
+          className="text-[#b3b3b3] hover:text-white transition-colors text-xl"
           title="Refresh"
-          whileHover={{ rotate: 180, scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
         >
           🔄
-        </motion.button>
+        </button>
       </div>
 
       {chartData.length === 0 ? (
@@ -209,10 +180,10 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
               <Area
                 type="monotone"
                 dataKey="positive_count"
-                stroke="#10b981"
+                stroke="#1DB954"
                 strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#colorPositive)"
+                fillOpacity={0.3}
+                fill="#1DB954"
                 name="Positive"
                 animationDuration={1000}
                 animationBegin={0}
@@ -220,10 +191,10 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
               <Area
                 type="monotone"
                 dataKey="neutral_count"
-                stroke="#6b7280"
+                stroke="#b3b3b3"
                 strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#colorNeutral)"
+                fillOpacity={0.3}
+                fill="#b3b3b3"
                 name="Neutral"
                 animationDuration={1000}
                 animationBegin={200}
@@ -233,8 +204,8 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
                 dataKey="negative_count"
                 stroke="#ef4444"
                 strokeWidth={2}
-                fillOpacity={1}
-                fill="url(#colorNegative)"
+                fillOpacity={0.3}
+                fill="#ef4444"
                 name="Negative"
                 animationDuration={1000}
                 animationBegin={400}
