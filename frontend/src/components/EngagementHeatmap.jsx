@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { api } from '../services/api';
 
 const EngagementHeatmap = ({ timeRange, refreshKey }) => {
@@ -87,19 +88,27 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
   const sources = Object.keys(bySource);
 
   return (
-    <div className="glass-card rounded-2xl p-6">
+    <div className="glass-card rounded-2xl p-6 card-depth">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-          <span className="text-2xl">🔥</span>
+          <motion.span
+            className="text-2xl"
+            animate={{ scale: [1, 1.3, 1] }}
+            transition={{ duration: 1.5, repeat: Infinity, repeatDelay: 2 }}
+          >
+            🔥
+          </motion.span>
           <span className="gradient-text">Engagement Metrics</span>
         </h3>
-        <button
+        <motion.button
           onClick={fetchEngagementData}
-          className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
+          className="text-purple-300 hover:text-white transition-all duration-300 text-xl"
           title="Refresh"
+          whileHover={{ rotate: 180, scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           🔄
-        </button>
+        </motion.button>
       </div>
 
       {sources.length === 0 ? (
@@ -108,15 +117,28 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {sources.map((source) => {
+          {sources.map((source, index) => {
             const data = bySource[source];
             return (
-              <div
+              <motion.div
                 key={source}
-                className="bg-gray-700/50 rounded-lg p-5 hover:bg-gray-700 transition"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, delay: index * 0.1 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className="gradient-border bg-gradient-to-br from-slate-700/50 to-slate-800/50 rounded-xl p-5 cursor-pointer relative overflow-hidden group"
               >
-                <div className="flex items-center space-x-3 mb-4">
-                  <span className="text-3xl">{getSourceIcon(source)}</span>
+                {/* Hover glow */}
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-pink-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+                <div className="flex items-center space-x-3 mb-4 relative z-10">
+                  <motion.span
+                    className="text-3xl"
+                    animate={{ rotate: [0, -10, 10, -10, 0] }}
+                    transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+                  >
+                    {getSourceIcon(source)}
+                  </motion.span>
                   <div>
                     <h4 className="text-white font-semibold capitalize">{source}</h4>
                     <p className="text-xs text-gray-400">
@@ -125,36 +147,45 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
                   </div>
                 </div>
 
-                <div className="space-y-3">
+                <div className="space-y-3 relative z-10">
                   {/* Views */}
-                  <div className="flex items-center justify-between">
+                  <motion.div
+                    className="flex items-center justify-between"
+                    whileHover={{ x: 5 }}
+                  >
                     <div className="flex items-center space-x-2">
                       <span className="text-gray-400 text-sm">👁️ Views</span>
                     </div>
                     <span className="text-white font-semibold">
                       {formatNumber(data.total_views)}
                     </span>
-                  </div>
+                  </motion.div>
 
                   {/* Likes */}
-                  <div className="flex items-center justify-between">
+                  <motion.div
+                    className="flex items-center justify-between"
+                    whileHover={{ x: 5 }}
+                  >
                     <div className="flex items-center space-x-2">
                       <span className="text-gray-400 text-sm">❤️ Likes</span>
                     </div>
                     <span className="text-white font-semibold">
                       {formatNumber(data.total_likes)}
                     </span>
-                  </div>
+                  </motion.div>
 
                   {/* Comments */}
-                  <div className="flex items-center justify-between">
+                  <motion.div
+                    className="flex items-center justify-between"
+                    whileHover={{ x: 5 }}
+                  >
                     <div className="flex items-center space-x-2">
                       <span className="text-gray-400 text-sm">💬 Comments</span>
                     </div>
                     <span className="text-white font-semibold">
                       {formatNumber(data.total_comments)}
                     </span>
-                  </div>
+                  </motion.div>
 
                   {/* Average Engagement */}
                   <div className="pt-3 border-t border-gray-600">
@@ -168,20 +199,19 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
                 </div>
 
                 {/* Engagement Bar */}
-                <div className="mt-4">
+                <div className="mt-4 relative z-10">
                   <div className="h-2 bg-gray-600 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500 transition-all duration-500"
-                      style={{
-                        width: `${Math.min(
-                          (data.avg_engagement / 10000) * 100,
-                          100
-                        )}%`,
+                    <motion.div
+                      className="h-full bg-gradient-to-r from-blue-500 to-purple-500"
+                      initial={{ width: 0 }}
+                      animate={{
+                        width: `${Math.min((data.avg_engagement / 10000) * 100, 100)}%`
                       }}
-                    ></div>
+                      transition={{ duration: 1, delay: index * 0.2, ease: "easeOut" }}
+                    />
                   </div>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>

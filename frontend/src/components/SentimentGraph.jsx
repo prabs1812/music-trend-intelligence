@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { api } from '../services/api';
+import AnimatedCounter from './AnimatedCounter';
 
 const SentimentGraph = ({ timeRange, refreshKey }) => {
   const [sentimentData, setSentimentData] = useState(null);
@@ -30,21 +32,35 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="glass-card rounded-xl p-4 shadow-2xl border border-purple-500/30">
-          <p className="text-white font-bold mb-3 text-sm">{data.timestamp}</p>
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8, y: 10 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          transition={{ duration: 0.2 }}
+          className="glass-card rounded-xl p-4 shadow-2xl border border-purple-500/40 backdrop-blur-xl relative"
+        >
+          <p className="text-white font-bold mb-3 text-sm border-b border-purple-500/30 pb-2">{data.timestamp}</p>
           <div className="space-y-2 text-sm">
-            <p className="text-green-400 font-semibold flex items-center justify-between">
+            <motion.p
+              className="text-green-400 font-semibold flex items-center justify-between"
+              whileHover={{ scale: 1.05, x: 5 }}
+            >
               <span>😊 Positive:</span>
-              <span>{data.positive_count}</span>
-            </p>
-            <p className="text-purple-200/70 font-semibold flex items-center justify-between">
+              <span className="font-bold">{data.positive_count}</span>
+            </motion.p>
+            <motion.p
+              className="text-purple-200/70 font-semibold flex items-center justify-between"
+              whileHover={{ scale: 1.05, x: 5 }}
+            >
               <span>😐 Neutral:</span>
-              <span>{data.neutral_count}</span>
-            </p>
-            <p className="text-red-400 font-semibold flex items-center justify-between">
+              <span className="font-bold">{data.neutral_count}</span>
+            </motion.p>
+            <motion.p
+              className="text-red-400 font-semibold flex items-center justify-between"
+              whileHover={{ scale: 1.05, x: 5 }}
+            >
               <span>😞 Negative:</span>
-              <span>{data.negative_count}</span>
-            </p>
+              <span className="font-bold">{data.negative_count}</span>
+            </motion.p>
             <div className="pt-2 mt-2 border-t border-purple-500/20">
               <p className="text-purple-300 font-bold flex items-center justify-between">
                 <span>Average:</span>
@@ -52,7 +68,8 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
               </p>
             </div>
           </div>
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl blur-xl -z-10" />
+        </motion.div>
       );
     }
     return null;
@@ -96,19 +113,27 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
   const chartData = sentimentData?.data_points || [];
 
   return (
-    <div className="glass-card rounded-2xl p-6">
+    <div className="glass-card rounded-2xl p-6 card-depth">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-          <span className="text-2xl">💭</span>
+          <motion.span
+            className="text-2xl"
+            animate={{ rotate: [0, -10, 10, -10, 0] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 3 }}
+          >
+            💭
+          </motion.span>
           <span className="gradient-text">Sentiment Analysis</span>
         </h3>
-        <button
+        <motion.button
           onClick={fetchSentimentData}
-          className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
+          className="text-purple-300 hover:text-white transition-all duration-300 text-xl"
           title="Refresh"
+          whileHover={{ rotate: 180, scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
         >
           🔄
-        </button>
+        </motion.button>
       </div>
 
       {chartData.length === 0 ? (
@@ -116,32 +141,44 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
           No sentiment data available
         </div>
       ) : (
-        <div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           {/* Summary Stats */}
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-green-400">
-                {chartData.reduce((sum, d) => sum + d.positive_count, 0)}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">Positive</div>
-            </div>
-            <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-gray-400">
-                {chartData.reduce((sum, d) => sum + d.neutral_count, 0)}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">Neutral</div>
-            </div>
-            <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-              <div className="text-2xl font-bold text-red-400">
-                {chartData.reduce((sum, d) => sum + d.negative_count, 0)}
-              </div>
-              <div className="text-xs text-gray-400 mt-1">Negative</div>
-            </div>
+          <div className="grid grid-cols-3 gap-4 mb-6">
+            <AnimatedCounter
+              value={chartData.reduce((sum, d) => sum + d.positive_count, 0)}
+              label="Positive"
+              icon="😊"
+              gradient="from-green-400 to-emerald-400"
+              duration={1.5}
+            />
+            <AnimatedCounter
+              value={chartData.reduce((sum, d) => sum + d.neutral_count, 0)}
+              label="Neutral"
+              icon="😐"
+              gradient="from-gray-400 to-slate-400"
+              duration={1.5}
+            />
+            <AnimatedCounter
+              value={chartData.reduce((sum, d) => sum + d.negative_count, 0)}
+              label="Negative"
+              icon="😞"
+              gradient="from-red-400 to-rose-400"
+              duration={1.5}
+            />
           </div>
 
           {/* Chart */}
-          <ResponsiveContainer width="100%" height={250}>
-            <AreaChart data={chartData}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            <ResponsiveContainer width="100%" height={250}>
+              <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="colorPositive" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#10b981" stopOpacity={0.8}/>
@@ -173,29 +210,39 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
                 type="monotone"
                 dataKey="positive_count"
                 stroke="#10b981"
+                strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorPositive)"
                 name="Positive"
+                animationDuration={1000}
+                animationBegin={0}
               />
               <Area
                 type="monotone"
                 dataKey="neutral_count"
                 stroke="#6b7280"
+                strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorNeutral)"
                 name="Neutral"
+                animationDuration={1000}
+                animationBegin={200}
               />
               <Area
                 type="monotone"
                 dataKey="negative_count"
                 stroke="#ef4444"
+                strokeWidth={2}
                 fillOpacity={1}
                 fill="url(#colorNegative)"
                 name="Negative"
+                animationDuration={1000}
+                animationBegin={400}
               />
             </AreaChart>
           </ResponsiveContainer>
-        </div>
+          </motion.div>
+        </motion.div>
       )}
     </div>
   );

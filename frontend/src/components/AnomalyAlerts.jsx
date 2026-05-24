@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '../services/api';
 import { anomaliesWebSocket } from '../services/websocket';
 import { useWebSocket } from '../hooks/useWebSocket';
@@ -133,97 +134,155 @@ const AnomalyAlerts = ({ refreshKey }) => {
   }
 
   return (
-    <div className="glass-card rounded-2xl p-6">
+    <div className="glass-card rounded-2xl p-6 card-depth">
       <div className="flex items-center justify-between mb-6">
         <h3 className="text-xl font-bold text-white flex items-center space-x-2">
-          <span className="text-2xl">🚨</span>
+          <motion.span
+            className="text-2xl"
+            animate={{ rotate: [0, -15, 15, -15, 0] }}
+            transition={{ duration: 2, repeat: Infinity, repeatDelay: 1 }}
+          >
+            🚨
+          </motion.span>
           <span className="gradient-text">Anomaly Alerts</span>
         </h3>
         <div className="flex items-center space-x-3">
-          <span className="text-sm text-purple-200/70 font-medium">
+          <motion.span
+            className="text-sm text-purple-200/70 font-medium"
+            animate={{ scale: [1, 1.1, 1] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
             {anomalies.length} active
-          </span>
-          <button
+          </motion.span>
+          <motion.button
             onClick={fetchAnomalies}
-            className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
+            className="text-purple-300 hover:text-white transition-all duration-300 text-xl"
             title="Refresh"
+            whileHover={{ rotate: 180, scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
           >
             🔄
-          </button>
+          </motion.button>
         </div>
       </div>
 
       {anomalies.length === 0 ? (
-        <div className="text-center py-16">
-          <div className="text-6xl mb-4">✅</div>
+        <motion.div
+          className="text-center py-16"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <motion.div
+            className="text-6xl mb-4"
+            animate={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            ✅
+          </motion.div>
           <p className="text-purple-200/60 font-medium">No active anomalies detected</p>
           <p className="text-purple-200/40 text-sm mt-2">All systems running smoothly</p>
-        </div>
+        </motion.div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {anomalies.map((anomaly) => (
-            <div
-              key={anomaly.id}
-              className={`group bg-gradient-to-br ${getAlertLevelColor(anomaly.alert_level)} rounded-xl p-4 border shadow-lg transition-all duration-300 hover:scale-105 ${
-                anomaly.acknowledged ? 'opacity-60' : ''
-              }`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="flex items-center space-x-2">
-                  <span className="text-2xl">{getAlertIcon(anomaly.alert_level)}</span>
-                  <span className="text-xs px-2.5 py-1 rounded-full font-bold uppercase bg-white/20 text-white">
-                    {anomaly.alert_level}
-                  </span>
-                </div>
-                {!anomaly.acknowledged && (
-                  <button
-                    onClick={() => handleDismiss(anomaly.id)}
-                    className="text-white/60 hover:text-white transition text-lg"
-                    title="Dismiss"
-                  >
-                    ✕
-                  </button>
+          <AnimatePresence mode="popLayout">
+            {anomalies.map((anomaly, index) => (
+              <motion.div
+                key={anomaly.id}
+                initial={{ opacity: 0, scale: 0.8, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: -20 }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
+                whileHover={{ scale: 1.05, y: -5 }}
+                className={`group bg-gradient-to-br ${getAlertLevelColor(anomaly.alert_level)} rounded-xl p-4 border shadow-lg cursor-pointer relative overflow-hidden ${
+                  anomaly.acknowledged ? 'opacity-60' : ''
+                }`}
+              >
+                {/* Pulse effect for critical */}
+                {anomaly.alert_level === 'critical' && !anomaly.acknowledged && (
+                  <motion.div
+                    className="absolute inset-0 bg-red-500/20 rounded-xl"
+                    animate={{ opacity: [0, 0.5, 0] }}
+                    transition={{ duration: 2, repeat: Infinity }}
+                  />
                 )}
-              </div>
 
-              <h4 className="text-white font-bold mb-2 text-lg">{anomaly.artist_name}</h4>
-              <p className="text-sm text-white/80 mb-3 leading-relaxed">{anomaly.description}</p>
+                <div className="flex items-start justify-between mb-3 relative z-10">
+                  <div className="flex items-center space-x-2">
+                    <motion.span
+                      className="text-2xl"
+                      animate={anomaly.alert_level === 'critical' ? { rotate: [0, -15, 15, -15, 0] } : {}}
+                      transition={{ duration: 0.5, repeat: anomaly.alert_level === 'critical' ? Infinity : 0, repeatDelay: 1 }}
+                    >
+                      {getAlertIcon(anomaly.alert_level)}
+                    </motion.span>
+                    <span className="text-xs px-2.5 py-1 rounded-full font-bold uppercase bg-white/20 text-white">
+                      {anomaly.alert_level}
+                    </span>
+                  </div>
+                  {!anomaly.acknowledged && (
+                    <motion.button
+                      onClick={() => handleDismiss(anomaly.id)}
+                      className="text-white/60 hover:text-white transition text-lg"
+                      title="Dismiss"
+                      whileHover={{ scale: 1.2, rotate: 90 }}
+                      whileTap={{ scale: 0.9 }}
+                    >
+                      ✕
+                    </motion.button>
+                  )}
+                </div>
 
-              <div className="space-y-1.5 text-xs text-white/70 mb-4">
-                <div className="flex justify-between">
-                  <span>Current:</span>
-                  <span className="text-white font-semibold">
-                    {anomaly.current_value?.toFixed(0)}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Expected:</span>
-                  <span className="font-medium">{anomaly.expected_value?.toFixed(0)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Deviation:</span>
-                  <span className="text-yellow-300 font-bold">
-                    {anomaly.deviation_percentage?.toFixed(1)}%
-                  </span>
-                </div>
-              </div>
+                <h4 className="text-white font-bold mb-2 text-lg relative z-10">{anomaly.artist_name}</h4>
+                <p className="text-sm text-white/80 mb-3 leading-relaxed relative z-10">{anomaly.description}</p>
 
-              {!anomaly.acknowledged && (
-                <button
-                  onClick={() => handleAcknowledge(anomaly.id)}
-                  className="w-full px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-all duration-300 transform hover:scale-105"
-                >
-                  ✓ Acknowledge
-                </button>
-              )}
-
-              {anomaly.acknowledged && (
-                <div className="text-center text-sm text-white/80 font-medium bg-white/10 py-2 rounded-lg">
-                  ✓ Acknowledged
+                <div className="space-y-1.5 text-xs text-white/70 mb-4 relative z-10">
+                  <motion.div
+                    className="flex justify-between"
+                    whileHover={{ x: 5 }}
+                  >
+                    <span>Current:</span>
+                    <span className="text-white font-semibold">
+                      {anomaly.current_value?.toFixed(0)}
+                    </span>
+                  </motion.div>
+                  <motion.div
+                    className="flex justify-between"
+                    whileHover={{ x: 5 }}
+                  >
+                    <span>Expected:</span>
+                    <span className="font-medium">{anomaly.expected_value?.toFixed(0)}</span>
+                  </motion.div>
+                  <motion.div
+                    className="flex justify-between"
+                    whileHover={{ x: 5 }}
+                  >
+                    <span>Deviation:</span>
+                    <span className="text-yellow-300 font-bold">
+                      {anomaly.deviation_percentage?.toFixed(1)}%
+                    </span>
+                  </motion.div>
                 </div>
-              )}
-            </div>
-          ))}
+
+                {!anomaly.acknowledged && (
+                  <motion.button
+                    onClick={() => handleAcknowledge(anomaly.id)}
+                    className="w-full px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg relative z-10"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    ✓ Acknowledge
+                  </motion.button>
+                )}
+
+                {anomaly.acknowledged && (
+                  <div className="text-center text-sm text-white/80 font-medium bg-white/10 py-2 rounded-lg relative z-10">
+                    ✓ Acknowledged
+                  </div>
+                )}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </div>
