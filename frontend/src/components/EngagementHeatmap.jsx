@@ -50,10 +50,13 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
 
   if (loading) {
     return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">🔥 Engagement Metrics</h3>
+      <div className="glass-card rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+          <span className="text-2xl">🔥</span>
+          <span className="gradient-text">Engagement Metrics</span>
+        </h3>
         <div className="h-48 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
         </div>
       </div>
     );
@@ -61,13 +64,17 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
 
   if (error) {
     return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">🔥 Engagement Metrics</h3>
-        <div className="text-center py-8">
-          <p className="text-red-400">{error}</p>
+      <div className="glass-card rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+          <span className="text-2xl">🔥</span>
+          <span className="gradient-text">Engagement Metrics</span>
+        </h3>
+        <div className="text-center py-12">
+          <div className="text-5xl mb-4">⚠️</div>
+          <p className="text-red-400 font-medium mb-4">{error}</p>
           <button
             onClick={fetchEngagementData}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-medium shadow-lg shadow-purple-500/50 transition-all duration-300 transform hover:scale-105"
           >
             Retry
           </button>
@@ -80,12 +87,15 @@ const EngagementHeatmap = ({ timeRange, refreshKey }) => {
   const sources = Object.keys(bySource);
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">🔥 Engagement Metrics</h3>
+    <div className="glass-card rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+          <span className="text-2xl">🔥</span>
+          <span className="gradient-text">Engagement Metrics</span>
+        </h3>
         <button
           onClick={fetchEngagementData}
-          className="text-gray-400 hover:text-white transition"
+          className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
           title="Refresh"
         >
           🔄

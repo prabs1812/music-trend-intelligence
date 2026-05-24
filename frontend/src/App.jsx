@@ -56,46 +56,46 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <div className="min-h-screen">
       {/* Header */}
-      <header className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
-        <div className="container mx-auto px-4 py-4">
+      <header className="glass-card sticky top-0 z-50 border-b border-purple-500/20">
+        <div className="container mx-auto px-4 py-5">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <div className="text-3xl">🎵</div>
+            <div className="flex items-center space-x-4">
+              <div className="text-4xl animate-pulse-glow">🎵</div>
               <div>
-                <h1 className="text-2xl font-bold text-white">
+                <h1 className="text-3xl font-bold gradient-text">
                   Music Trend Intelligence
                 </h1>
-                <p className="text-sm text-gray-400">
+                <p className="text-sm text-purple-300/80 mt-1">
                   Real-time analytics powered by AI
                 </p>
               </div>
             </div>
 
             {systemStats && (
-              <div className="flex items-center space-x-6 text-sm">
-                <div className="text-center">
-                  <div className="text-gray-400">Artists</div>
-                  <div className="text-white font-semibold">
+              <div className="flex items-center space-x-8 text-sm">
+                <div className="text-center group cursor-pointer">
+                  <div className="text-purple-300/70 text-xs uppercase tracking-wider">Artists</div>
+                  <div className="text-white font-bold text-xl mt-1 group-hover:text-purple-400 transition">
                     {systemStats.total_artists?.toLocaleString() || 0}
                   </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-gray-400">Trends</div>
-                  <div className="text-white font-semibold">
+                <div className="text-center group cursor-pointer">
+                  <div className="text-purple-300/70 text-xs uppercase tracking-wider">Trends</div>
+                  <div className="text-white font-bold text-xl mt-1 group-hover:text-purple-400 transition">
                     {systemStats.total_trends?.toLocaleString() || 0}
                   </div>
                 </div>
-                <div className="text-center">
-                  <div className="text-gray-400">Anomalies</div>
-                  <div className="text-white font-semibold">
+                <div className="text-center group cursor-pointer">
+                  <div className="text-purple-300/70 text-xs uppercase tracking-wider">Anomalies</div>
+                  <div className="text-white font-bold text-xl mt-1 group-hover:text-purple-400 transition">
                     {systemStats.total_anomalies?.toLocaleString() || 0}
                   </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-gray-400">Live</span>
+                <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-500/50"></div>
+                  <span className="text-green-300 font-medium">Live</span>
                 </div>
               </div>
             )}
@@ -104,17 +104,20 @@ function App() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6">
+      <main className="container mx-auto px-4 py-8">
         <Dashboard />
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-800 border-t border-gray-700 mt-12">
-        <div className="container mx-auto px-4 py-6 text-center text-gray-400 text-sm">
-          <p>
-            Music Trend Intelligence System v1.0.0 | Data from Spotify, Reddit, YouTube
+      <footer className="glass-card border-t border-purple-500/20 mt-16">
+        <div className="container mx-auto px-4 py-8 text-center">
+          <p className="text-purple-200/80 font-medium">
+            Music Trend Intelligence System v1.0.0
           </p>
-          <p className="mt-2">
+          <p className="text-purple-300/60 text-sm mt-2">
+            Data from Last.fm, MusicBrainz, Reddit, YouTube
+          </p>
+          <p className="text-purple-300/50 text-xs mt-3">
             Built with FastAPI, React, Kafka, Redis, MongoDB
           </p>
         </div>

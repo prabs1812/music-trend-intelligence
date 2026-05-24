@@ -30,15 +30,27 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
     if (active && payload && payload.length) {
       const data = payload[0].payload;
       return (
-        <div className="bg-gray-900 border border-gray-700 rounded-lg p-3 shadow-lg">
-          <p className="text-white font-semibold mb-2">{data.timestamp}</p>
-          <div className="space-y-1 text-sm">
-            <p className="text-green-400">Positive: {data.positive_count}</p>
-            <p className="text-gray-400">Neutral: {data.neutral_count}</p>
-            <p className="text-red-400">Negative: {data.negative_count}</p>
-            <p className="text-blue-400 font-semibold">
-              Avg: {data.avg_sentiment?.toFixed(3)}
+        <div className="glass-card rounded-xl p-4 shadow-2xl border border-purple-500/30">
+          <p className="text-white font-bold mb-3 text-sm">{data.timestamp}</p>
+          <div className="space-y-2 text-sm">
+            <p className="text-green-400 font-semibold flex items-center justify-between">
+              <span>😊 Positive:</span>
+              <span>{data.positive_count}</span>
             </p>
+            <p className="text-purple-200/70 font-semibold flex items-center justify-between">
+              <span>😐 Neutral:</span>
+              <span>{data.neutral_count}</span>
+            </p>
+            <p className="text-red-400 font-semibold flex items-center justify-between">
+              <span>😞 Negative:</span>
+              <span>{data.negative_count}</span>
+            </p>
+            <div className="pt-2 mt-2 border-t border-purple-500/20">
+              <p className="text-purple-300 font-bold flex items-center justify-between">
+                <span>Average:</span>
+                <span>{data.avg_sentiment?.toFixed(3)}</span>
+              </p>
+            </div>
           </div>
         </div>
       );
@@ -48,10 +60,13 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
 
   if (loading) {
     return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">💭 Sentiment Analysis</h3>
+      <div className="glass-card rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+          <span className="text-2xl">💭</span>
+          <span className="gradient-text">Sentiment Analysis</span>
+        </h3>
         <div className="h-64 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
         </div>
       </div>
     );
@@ -59,13 +74,17 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
 
   if (error) {
     return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">💭 Sentiment Analysis</h3>
-        <div className="text-center py-8">
-          <p className="text-red-400">{error}</p>
+      <div className="glass-card rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+          <span className="text-2xl">💭</span>
+          <span className="gradient-text">Sentiment Analysis</span>
+        </h3>
+        <div className="text-center py-12">
+          <div className="text-5xl mb-4">⚠️</div>
+          <p className="text-red-400 font-medium mb-4">{error}</p>
           <button
             onClick={fetchSentimentData}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-medium shadow-lg shadow-purple-500/50 transition-all duration-300 transform hover:scale-105"
           >
             Retry
           </button>
@@ -77,12 +96,15 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
   const chartData = sentimentData?.data_points || [];
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">💭 Sentiment Analysis</h3>
+    <div className="glass-card rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+          <span className="text-2xl">💭</span>
+          <span className="gradient-text">Sentiment Analysis</span>
+        </h3>
         <button
           onClick={fetchSentimentData}
-          className="text-gray-400 hover:text-white transition"
+          className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
           title="Refresh"
         >
           🔄

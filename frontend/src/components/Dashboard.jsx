@@ -34,32 +34,32 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Controls */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <h2 className="text-xl font-semibold text-white">Dashboard</h2>
-          <div className="flex items-center space-x-2">
-            <span className="text-sm text-gray-400">WebSocket:</span>
-            <div className={`flex items-center space-x-1 ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
-              <div className={`w-2 h-2 rounded-full ${isConnected ? 'bg-green-400' : 'bg-red-400'}`}></div>
-              <span className="text-sm">{isConnected ? 'Connected' : 'Disconnected'}</span>
+      <div className="glass-card rounded-2xl p-6 flex items-center justify-between">
+        <div className="flex items-center space-x-6">
+          <h2 className="text-2xl font-bold gradient-text">Dashboard</h2>
+          <div className="flex items-center space-x-3 px-4 py-2 rounded-full bg-slate-700/30 border border-slate-600/30">
+            <span className="text-sm text-purple-200/70 font-medium">WebSocket:</span>
+            <div className={`flex items-center space-x-2 ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
+              <div className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-400 shadow-lg shadow-green-500/50' : 'bg-red-400 shadow-lg shadow-red-500/50'} animate-pulse`}></div>
+              <span className="text-sm font-semibold">{isConnected ? 'Connected' : 'Disconnected'}</span>
             </div>
           </div>
         </div>
 
         {/* Time Range Selector */}
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-400">Time Range:</span>
-          <div className="flex space-x-1 bg-gray-800 rounded-lg p-1">
+        <div className="flex items-center space-x-4">
+          <span className="text-sm text-purple-200/70 font-medium">Time Range:</span>
+          <div className="flex space-x-2 bg-slate-800/50 rounded-xl p-1.5 border border-purple-500/20">
             {['1h', '6h', '24h', '7d'].map((range) => (
               <button
                 key={range}
                 onClick={() => handleTimeRangeChange(range)}
-                className={`px-3 py-1 rounded text-sm transition ${
+                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                   timeRange === range
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white'
+                    ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
+                    : 'text-purple-200/70 hover:text-white hover:bg-slate-700/50'
                 }`}
               >
                 {range}

@@ -59,15 +59,26 @@ const AnomalyAlerts = ({ refreshKey }) => {
   const getAlertLevelColor = (level) => {
     switch (level) {
       case 'critical':
-        return 'bg-red-600 text-white';
+        return 'from-red-600 to-red-800 border-red-500/50 shadow-red-500/30';
       case 'high':
-        return 'bg-orange-600 text-white';
+        return 'from-orange-600 to-orange-800 border-orange-500/50 shadow-orange-500/30';
       case 'medium':
-        return 'bg-yellow-600 text-white';
-      case 'low':
-        return 'bg-blue-600 text-white';
+        return 'from-yellow-600 to-yellow-800 border-yellow-500/50 shadow-yellow-500/30';
       default:
-        return 'bg-gray-600 text-white';
+        return 'from-blue-600 to-blue-800 border-blue-500/50 shadow-blue-500/30';
+    }
+  };
+
+  const getAlertIcon = (level) => {
+    switch (level) {
+      case 'critical':
+        return '🚨';
+      case 'high':
+        return '⚠️';
+      case 'medium':
+        return '⚡';
+      default:
+        return 'ℹ️';
     }
   };
 
@@ -88,10 +99,13 @@ const AnomalyAlerts = ({ refreshKey }) => {
 
   if (loading) {
     return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">🚨 Anomaly Alerts</h3>
+      <div className="glass-card rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+          <span className="text-2xl">🚨</span>
+          <span className="gradient-text">Anomaly Alerts</span>
+        </h3>
         <div className="h-32 flex items-center justify-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-purple-500"></div>
         </div>
       </div>
     );
@@ -99,13 +113,17 @@ const AnomalyAlerts = ({ refreshKey }) => {
 
   if (error) {
     return (
-      <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-        <h3 className="text-lg font-semibold text-white mb-4">🚨 Anomaly Alerts</h3>
-        <div className="text-center py-8">
-          <p className="text-red-400">{error}</p>
+      <div className="glass-card rounded-2xl p-6">
+        <h3 className="text-xl font-bold text-white mb-6 flex items-center space-x-2">
+          <span className="text-2xl">🚨</span>
+          <span className="gradient-text">Anomaly Alerts</span>
+        </h3>
+        <div className="text-center py-12">
+          <div className="text-5xl mb-4">⚠️</div>
+          <p className="text-red-400 font-medium mb-4">{error}</p>
           <button
             onClick={fetchAnomalies}
-            className="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition"
+            className="px-6 py-3 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-xl font-medium shadow-lg shadow-purple-500/50 transition-all duration-300 transform hover:scale-105"
           >
             Retry
           </button>
@@ -115,16 +133,19 @@ const AnomalyAlerts = ({ refreshKey }) => {
   }
 
   return (
-    <div className="bg-gray-800 rounded-lg p-6 border border-gray-700">
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-white">🚨 Anomaly Alerts</h3>
-        <div className="flex items-center space-x-2">
-          <span className="text-sm text-gray-400">
+    <div className="glass-card rounded-2xl p-6">
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-xl font-bold text-white flex items-center space-x-2">
+          <span className="text-2xl">🚨</span>
+          <span className="gradient-text">Anomaly Alerts</span>
+        </h3>
+        <div className="flex items-center space-x-3">
+          <span className="text-sm text-purple-200/70 font-medium">
             {anomalies.length} active
           </span>
           <button
             onClick={fetchAnomalies}
-            className="text-gray-400 hover:text-white transition"
+            className="text-purple-300 hover:text-white transition-all duration-300 transform hover:rotate-180 text-xl"
             title="Refresh"
           >
             🔄
@@ -133,40 +154,31 @@ const AnomalyAlerts = ({ refreshKey }) => {
       </div>
 
       {anomalies.length === 0 ? (
-        <div className="text-center py-8 text-gray-400">
-          <div className="text-4xl mb-2">✅</div>
-          <p>No active anomalies detected</p>
+        <div className="text-center py-16">
+          <div className="text-6xl mb-4">✅</div>
+          <p className="text-purple-200/60 font-medium">No active anomalies detected</p>
+          <p className="text-purple-200/40 text-sm mt-2">All systems running smoothly</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {anomalies.map((anomaly) => (
             <div
               key={anomaly.id}
-              className={`bg-gray-700/50 rounded-lg p-4 border-l-4 ${
-                anomaly.alert_level === 'critical'
-                  ? 'border-red-500'
-                  : anomaly.alert_level === 'high'
-                  ? 'border-orange-500'
-                  : anomaly.alert_level === 'medium'
-                  ? 'border-yellow-500'
-                  : 'border-blue-500'
-              } ${anomaly.acknowledged ? 'opacity-60' : ''}`}
+              className={`group bg-gradient-to-br ${getAlertLevelColor(anomaly.alert_level)} rounded-xl p-4 border shadow-lg transition-all duration-300 hover:scale-105 ${
+                anomaly.acknowledged ? 'opacity-60' : ''
+              }`}
             >
-              <div className="flex items-start justify-between mb-2">
+              <div className="flex items-start justify-between mb-3">
                 <div className="flex items-center space-x-2">
-                  <span className="text-2xl">{getAnomalyIcon(anomaly.anomaly_type)}</span>
-                  <span
-                    className={`text-xs px-2 py-1 rounded font-semibold uppercase ${getAlertLevelColor(
-                      anomaly.alert_level
-                    )}`}
-                  >
+                  <span className="text-2xl">{getAlertIcon(anomaly.alert_level)}</span>
+                  <span className="text-xs px-2.5 py-1 rounded-full font-bold uppercase bg-white/20 text-white">
                     {anomaly.alert_level}
                   </span>
                 </div>
                 {!anomaly.acknowledged && (
                   <button
                     onClick={() => handleDismiss(anomaly.id)}
-                    className="text-gray-400 hover:text-white transition"
+                    className="text-white/60 hover:text-white transition text-lg"
                     title="Dismiss"
                   >
                     ✕
@@ -174,10 +186,10 @@ const AnomalyAlerts = ({ refreshKey }) => {
                 )}
               </div>
 
-              <h4 className="text-white font-semibold mb-1">{anomaly.artist_name}</h4>
-              <p className="text-sm text-gray-300 mb-3">{anomaly.description}</p>
+              <h4 className="text-white font-bold mb-2 text-lg">{anomaly.artist_name}</h4>
+              <p className="text-sm text-white/80 mb-3 leading-relaxed">{anomaly.description}</p>
 
-              <div className="space-y-1 text-xs text-gray-400 mb-3">
+              <div className="space-y-1.5 text-xs text-white/70 mb-4">
                 <div className="flex justify-between">
                   <span>Current:</span>
                   <span className="text-white font-semibold">
@@ -186,11 +198,11 @@ const AnomalyAlerts = ({ refreshKey }) => {
                 </div>
                 <div className="flex justify-between">
                   <span>Expected:</span>
-                  <span>{anomaly.expected_value?.toFixed(0)}</span>
+                  <span className="font-medium">{anomaly.expected_value?.toFixed(0)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Deviation:</span>
-                  <span className="text-orange-400 font-semibold">
+                  <span className="text-yellow-300 font-bold">
                     {anomaly.deviation_percentage?.toFixed(1)}%
                   </span>
                 </div>
@@ -199,14 +211,14 @@ const AnomalyAlerts = ({ refreshKey }) => {
               {!anomaly.acknowledged && (
                 <button
                   onClick={() => handleAcknowledge(anomaly.id)}
-                  className="w-full px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded transition"
+                  className="w-full px-4 py-2 bg-white/20 hover:bg-white/30 text-white text-sm font-medium rounded-lg transition-all duration-300 transform hover:scale-105"
                 >
-                  Acknowledge
+                  ✓ Acknowledge
                 </button>
               )}
 
               {anomaly.acknowledged && (
-                <div className="text-center text-xs text-green-400">
+                <div className="text-center text-sm text-white/80 font-medium bg-white/10 py-2 rounded-lg">
                   ✓ Acknowledged
                 </div>
               )}
