@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Music, TrendingUp, TrendingDown, ArrowUpDown } from 'lucide-react';
 import Card from './ui/Card';
-import api from '../services/api';
+import { api } from '../services/api';
 
 const ViralSongsTable = () => {
   const [trends, setTrends] = useState([]);

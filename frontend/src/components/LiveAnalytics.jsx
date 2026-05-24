@@ -4,7 +4,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { Activity, TrendingUp, Users, Music } from 'lucide-react';
 import StatCard from './StatCard';
 import Card from './ui/Card';
-import api from '../services/api';
+import { api } from '../services/api';
 
 const LiveAnalytics = () => {
   const [analyticsData, setAnalyticsData] = useState(null);

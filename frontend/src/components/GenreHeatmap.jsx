@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Music2, TrendingUp } from 'lucide-react';
 import Card from './ui/Card';
-import api from '../services/api';
+import { api } from '../services/api';
 
 const GenreHeatmap = () => {
   const [genres, setGenres] = useState([]);

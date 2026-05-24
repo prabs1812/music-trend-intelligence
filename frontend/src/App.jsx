@@ -71,7 +71,7 @@ function App() {
         <Sidebar />
 
         {/* Main Content Area - Responsive padding for sidebar */}
-        <div className="pl-20 lg:pl-80 transition-all duration-300">
+        <div className="pl-20 lg:pl-60 transition-all duration-300">
           {/* Page Content */}
           <main className="px-6 py-8 lg:px-8">
             <Routes>

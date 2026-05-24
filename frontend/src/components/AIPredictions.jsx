@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Sparkles, TrendingUp, AlertTriangle, Zap } from 'lucide-react';
 import Card from './ui/Card';
-import api from '../services/api';
+import { api } from '../services/api';
 
 const AIPredictions = () => {
   const [anomalies, setAnomalies] = useState([]);
