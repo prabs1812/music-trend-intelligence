@@ -11,11 +11,11 @@ const CustomTooltip = ({ active, payload, label, type = 'default' }) => {
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.8, y: 10 }}
         transition={{ duration: 0.2 }}
-        className="glass-card rounded-xl p-4 shadow-2xl border border-purple-500/40 backdrop-blur-xl"
+        className="glass-card rounded-xl p-4 shadow-2xl border border-white/40 backdrop-blur-xl"
       >
         {label && (
           <motion.p
-            className="text-white font-bold mb-3 text-sm border-b border-purple-500/30 pb-2"
+            className="text-white font-bold mb-3 text-sm border-b border-white/30 pb-2"
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
@@ -41,7 +41,7 @@ const CustomTooltip = ({ active, payload, label, type = 'default' }) => {
                     boxShadow: `0 0 10px ${entry.color}40`
                   }}
                 />
-                <span className="text-purple-200/90 text-sm font-medium">
+                <span className="text-gray-300 text-sm font-medium">
                   {entry.name}:
                 </span>
               </div>
@@ -55,7 +55,7 @@ const CustomTooltip = ({ active, payload, label, type = 'default' }) => {
         </div>
 
         {/* Glow effect */}
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-xl blur-xl -z-10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-white/20 to-gray-400/20 rounded-xl blur-xl -z-10" />
       </motion.div>
     </AnimatePresence>
   );

@@ -125,10 +125,10 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.3, delay: index * 0.05 }}
               whileHover={{ scale: 1.02, x: 5 }}
-              className="group flex items-center space-x-4 p-4 gradient-border bg-gradient-to-r from-slate-700/30 to-slate-800/30 rounded-xl hover:from-slate-700/50 hover:to-slate-800/50 cursor-pointer relative overflow-hidden"
+              className="group flex items-center space-x-4 p-4 gradient-border bg-gradient-to-r from-black/30 to-gray-900/30 rounded-xl hover:from-black/50 hover:to-gray-900/50 cursor-pointer relative overflow-hidden"
             >
               {/* Hover glow effect */}
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-600/0 via-purple-600/10 to-pink-600/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-gray-400/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               {/* Rank */}
               <div className="flex-shrink-0 w-10 text-center relative z-10">
                 <motion.span
@@ -145,15 +145,15 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
               {/* Artist Info */}
               <div className="flex-1 min-w-0 relative z-10">
                 <div className="flex items-center space-x-2 mb-1">
-                  <h4 className="text-white font-semibold truncate group-hover:text-purple-300 transition">
+                  <h4 className="text-white font-semibold truncate group-hover:text-gray-300 transition">
                     {artist.name}
                   </h4>
                   <span className="text-xl">
                     {getTrendIcon(artist.growth_velocity || 0)}
                   </span>
                 </div>
-                <div className="flex items-center space-x-4 text-xs text-purple-200/60 mb-2">
-                  <span className="font-medium">Score: <span className="text-purple-300">{artist.trend_score?.toFixed(1) || 0}</span></span>
+                <div className="flex items-center space-x-4 text-xs text-gray-400 mb-2">
+                  <span className="font-medium">Score: <span className="text-gray-300">{artist.trend_score?.toFixed(1) || 0}</span></span>
                   <span className={`font-medium ${getSentimentColor(artist.sentiment_score || 0)}`}>
                     Sentiment: {(artist.sentiment_score || 0).toFixed(2)}
                   </span>
@@ -163,7 +163,7 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
                     {artist.genres.slice(0, 3).map((genre, i) => (
                       <span
                         key={i}
-                        className="text-xs px-2.5 py-1 bg-gradient-to-r from-purple-600/30 to-pink-600/30 text-purple-200 rounded-full border border-purple-500/20 font-medium"
+                        className="text-xs px-2.5 py-1 bg-gradient-to-r from-gray-600/30 to-gray-800/30 text-gray-200 rounded-full border border-gray-500/20 font-medium"
                       >
                         {genre}
                       </span>
@@ -175,15 +175,15 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
               {/* Metrics */}
               <div className="flex-shrink-0 text-right text-xs space-y-1 relative z-10">
                 <motion.div
-                  className="flex items-center justify-end space-x-1 text-purple-200/60"
-                  whileHover={{ scale: 1.1, color: '#c084fc' }}
+                  className="flex items-center justify-end space-x-1 text-gray-400"
+                  whileHover={{ scale: 1.1, color: '#d0d0d0' }}
                 >
                   <span>💬</span>
                   <span>{artist.reddit_mentions || 0}</span>
                 </motion.div>
                 <motion.div
-                  className="flex items-center justify-end space-x-1 text-purple-200/60"
-                  whileHover={{ scale: 1.1, color: '#c084fc' }}
+                  className="flex items-center justify-end space-x-1 text-gray-400"
+                  whileHover={{ scale: 1.1, color: '#d0d0d0' }}
                 >
                   <span>📺</span>
                   <span>{artist.youtube_mentions || 0}</span>

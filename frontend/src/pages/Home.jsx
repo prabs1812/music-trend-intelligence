@@ -9,7 +9,7 @@ const Home = () => {
   return (
     <div className="space-y-8">
       {/* Hero Section */}
-      <EnhancedCard hover={true} glow={true} gradient="from-purple-500/20 to-pink-500/20">
+      <EnhancedCard hover={true} glow={true} gradient="from-white/20 to-gray-500/20">
         <div className="text-center">
           <motion.h1
             className="text-5xl font-bold gradient-text mb-4"
@@ -20,7 +20,7 @@ const Home = () => {
             Welcome to Music Trend Intelligence
           </motion.h1>
           <motion.p
-            className="text-purple-200/80 text-lg mb-8"
+            className="text-gray-300 text-lg mb-8"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.2 }}
@@ -35,17 +35,17 @@ const Home = () => {
           >
             <Link to="/artists">
               <motion.button
-                className="px-8 py-4 bg-gradient-to-r from-purple-600 to-pink-600 text-white rounded-xl font-medium shadow-lg shadow-purple-500/50 relative overflow-hidden group"
+                className="px-8 py-4 bg-gradient-to-r from-gray-700 to-gray-900 text-white rounded-xl font-medium shadow-lg shadow-black/50 relative overflow-hidden group"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <span className="relative z-10">Explore Artists</span>
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-700 to-pink-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-gray-800 to-black opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               </motion.button>
             </Link>
             <Link to="/genres">
               <motion.button
-                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-purple-500/30"
+                className="px-8 py-4 bg-white/10 hover:bg-white/20 text-white rounded-xl font-medium border border-white/30"
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
@@ -90,7 +90,7 @@ const Home = () => {
       {/* Quick Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Link to="/analytics">
-          <EnhancedCard hover={true} glow={true} gradient="from-blue-500/10 to-cyan-500/10" delay={0}>
+          <EnhancedCard hover={true} glow={true} gradient="from-gray-500/10 to-gray-700/10" delay={0}>
             <motion.div
               className="text-4xl mb-3"
               animate={{ y: [0, -5, 0] }}
@@ -99,12 +99,12 @@ const Home = () => {
               📊
             </motion.div>
             <h3 className="text-xl font-bold text-white mb-2">Analytics</h3>
-            <p className="text-purple-200/70">View sentiment trends and engagement metrics</p>
+            <p className="text-gray-400">View sentiment trends and engagement metrics</p>
           </EnhancedCard>
         </Link>
 
         <Link to="/anomalies">
-          <EnhancedCard hover={true} glow={true} gradient="from-red-500/10 to-orange-500/10" delay={0.1}>
+          <EnhancedCard hover={true} glow={true} gradient="from-gray-600/10 to-gray-800/10" delay={0.1}>
             <motion.div
               className="text-4xl mb-3"
               animate={{ rotate: [0, -10, 10, -10, 0] }}
@@ -113,11 +113,11 @@ const Home = () => {
               🚨
             </motion.div>
             <h3 className="text-xl font-bold text-white mb-2">Anomalies</h3>
-            <p className="text-purple-200/70">Monitor unusual patterns and alerts</p>
+            <p className="text-gray-400">Monitor unusual patterns and alerts</p>
           </EnhancedCard>
         </Link>
 
-        <EnhancedCard hover={false} glow={false} gradient="from-green-500/10 to-emerald-500/10" delay={0.2}>
+        <EnhancedCard hover={false} glow={false} gradient="from-gray-400/10 to-gray-600/10" delay={0.2}>
           <motion.div
             className="text-4xl mb-3"
             animate={{ scale: [1, 1.2, 1] }}
@@ -126,7 +126,7 @@ const Home = () => {
             🔥
           </motion.div>
           <h3 className="text-xl font-bold text-white mb-2">Live Updates</h3>
-          <p className="text-purple-200/70">Real-time data refreshed every 5 minutes</p>
+          <p className="text-gray-400">Real-time data refreshed every 5 minutes</p>
         </EnhancedCard>
       </div>
     </div>

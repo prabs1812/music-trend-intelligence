@@ -10,7 +10,7 @@ const AnimatedCounter = ({
   decimals = 0,
   suffix = '',
   prefix = '',
-  gradient = 'from-purple-400 to-pink-400'
+  gradient = 'from-white to-gray-400'
 }) => {
   return (
     <motion.div
@@ -19,7 +19,7 @@ const AnimatedCounter = ({
       transition={{ duration: 0.5 }}
       className="relative group"
     >
-      <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-br from-slate-800/50 to-slate-900/50 border border-purple-500/20 hover:border-purple-500/40 transition-all duration-300 backdrop-blur-sm">
+      <div className="flex items-center space-x-3 px-4 py-2 rounded-xl bg-gradient-to-br from-black/50 to-gray-900/50 border border-white/20 hover:border-white/40 transition-all duration-300 backdrop-blur-sm">
         {icon && (
           <motion.span
             className="text-2xl"
@@ -37,7 +37,7 @@ const AnimatedCounter = ({
           </motion.span>
         )}
         <div className="flex flex-col">
-          <span className="text-xs text-purple-200/60 font-medium uppercase tracking-wider">
+          <span className="text-xs text-gray-400 font-medium uppercase tracking-wider">
             {label}
           </span>
           <div className={`text-xl font-bold bg-gradient-to-r ${gradient} bg-clip-text text-transparent`}>

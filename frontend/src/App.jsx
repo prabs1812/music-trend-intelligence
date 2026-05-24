@@ -67,7 +67,7 @@ function App() {
     <Router>
       <div className="min-h-screen relative">
         {/* Particle Background */}
-        <ParticleBackground density={40} speed={0.3} color="#a855f7" />
+        <ParticleBackground density={40} speed={0.3} color="#ffffff" />
 
         {/* Navigation */}
         <Navigation />
@@ -82,19 +82,19 @@ function App() {
                     value={systemStats.total_artists || 0}
                     label="Artists"
                     icon="🎤"
-                    gradient="from-purple-400 to-pink-400"
+                    gradient="from-white to-gray-400"
                   />
                   <AnimatedCounter
                     value={systemStats.total_trends || 0}
                     label="Trends"
                     icon="📈"
-                    gradient="from-blue-400 to-cyan-400"
+                    gradient="from-gray-200 to-gray-500"
                   />
                   <AnimatedCounter
                     value={systemStats.total_anomalies || 0}
                     label="Anomalies"
                     icon="🚨"
-                    gradient="from-red-400 to-orange-400"
+                    gradient="from-gray-300 to-gray-600"
                   />
                 </div>
                 <div className="flex items-center space-x-2 px-4 py-2 rounded-full bg-green-500/10 border border-green-500/30 backdrop-blur-sm">

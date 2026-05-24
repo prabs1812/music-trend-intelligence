@@ -49,12 +49,12 @@ const Dashboard = () => {
               Dashboard
             </motion.h2>
             <motion.div
-              className="flex items-center space-x-3 px-4 py-2 rounded-full bg-slate-700/30 border border-slate-600/30 backdrop-blur-sm"
+              className="flex items-center space-x-3 px-4 py-2 rounded-full bg-black/30 border border-gray-600/30 backdrop-blur-sm"
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 0.2 }}
             >
-              <span className="text-sm text-purple-200/70 font-medium">WebSocket:</span>
+              <span className="text-sm text-gray-400 font-medium">WebSocket:</span>
               <div className={`flex items-center space-x-2 ${isConnected ? 'text-green-400' : 'text-red-400'}`}>
                 <motion.div
                   className={`w-2.5 h-2.5 rounded-full ${isConnected ? 'bg-green-400 shadow-lg shadow-green-500/50' : 'bg-red-400 shadow-lg shadow-red-500/50'}`}
@@ -74,15 +74,15 @@ const Dashboard = () => {
             transition={{ delay: 0.3 }}
           >
             <span className="text-sm text-purple-200/70 font-medium">Time Range:</span>
-            <div className="flex space-x-2 bg-slate-800/50 rounded-xl p-1.5 border border-purple-500/20 backdrop-blur-sm">
+            <div className="flex space-x-2 bg-black/50 rounded-xl p-1.5 border border-white/20 backdrop-blur-sm">
               {['1h', '6h', '24h', '7d'].map((range, index) => (
                 <motion.button
                   key={range}
                   onClick={() => handleTimeRangeChange(range)}
                   className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
                     timeRange === range
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg shadow-purple-500/50'
-                      : 'text-purple-200/70 hover:text-white hover:bg-slate-700/50'
+                      ? 'bg-gradient-to-r from-gray-600 to-gray-800 text-white shadow-lg shadow-black/50'
+                      : 'text-gray-400 hover:text-white hover:bg-gray-700/50'
                   }`}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

@@ -104,18 +104,18 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                 whileHover={{ scale: 1.02, x: 5 }}
               >
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-white font-semibold capitalize group-hover:text-purple-300 transition">{genre.name}</span>
+                  <span className="text-white font-semibold capitalize group-hover:text-gray-300 transition">{genre.name}</span>
                   <div className="flex items-center space-x-3">
                     <motion.span
-                      className="text-purple-200/60 text-xs"
-                      whileHover={{ scale: 1.1, color: '#c084fc' }}
+                      className="text-gray-400 text-xs"
+                      whileHover={{ scale: 1.1, color: '#d0d0d0' }}
                     >
                       {genre.artist_count} artists
                     </motion.span>
                     <motion.span
                       className={`font-bold text-sm ${
                         genre.growth_rate > 0 ? 'text-green-400' :
-                        genre.growth_rate < 0 ? 'text-red-400' : 'text-purple-200/60'
+                        genre.growth_rate < 0 ? 'text-red-400' : 'text-gray-400'
                       }`}
                       whileHover={{ scale: 1.15 }}
                     >
@@ -123,9 +123,9 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                     </motion.span>
                   </div>
                 </div>
-                <div className="relative h-8 bg-slate-800/50 rounded-xl overflow-hidden border border-purple-500/10 group-hover:border-purple-500/30 transition-all">
+                <div className="relative h-8 bg-black/50 rounded-xl overflow-hidden border border-white/10 group-hover:border-white/30 transition-all">
                   <motion.div
-                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-purple-600 via-pink-600 to-purple-600 shadow-lg"
+                    className="absolute top-0 left-0 h-full bg-gradient-to-r from-gray-600 via-gray-400 to-gray-600 shadow-lg"
                     initial={{ width: 0 }}
                     animate={{ width: `${Math.min(genre.popularity || 0, 100)}%` }}
                     transition={{ duration: 1, delay: index * 0.1, ease: "easeOut" }}
@@ -145,7 +145,7 @@ const GenreChart = ({ timeRange, refreshKey }) => {
                 </div>
                 {genre.trending_artists && genre.trending_artists.length > 0 && (
                   <motion.div
-                    className="text-xs text-purple-200/50 pl-2 font-medium"
+                    className="text-xs text-gray-400 pl-2 font-medium"
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     transition={{ delay: index * 0.1 + 0.3 }}

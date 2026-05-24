@@ -36,9 +36,9 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
           initial={{ opacity: 0, scale: 0.8, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           transition={{ duration: 0.2 }}
-          className="glass-card rounded-xl p-4 shadow-2xl border border-purple-500/40 backdrop-blur-xl relative"
+          className="glass-card rounded-xl p-4 shadow-2xl border border-white/40 backdrop-blur-xl relative"
         >
-          <p className="text-white font-bold mb-3 text-sm border-b border-purple-500/30 pb-2">{data.timestamp}</p>
+          <p className="text-white font-bold mb-3 text-sm border-b border-white/30 pb-2">{data.timestamp}</p>
           <div className="space-y-2 text-sm">
             <motion.p
               className="text-green-400 font-semibold flex items-center justify-between"
@@ -48,7 +48,7 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
               <span className="font-bold">{data.positive_count}</span>
             </motion.p>
             <motion.p
-              className="text-purple-200/70 font-semibold flex items-center justify-between"
+              className="text-gray-400 font-semibold flex items-center justify-between"
               whileHover={{ scale: 1.05, x: 5 }}
             >
               <span>😐 Neutral:</span>
@@ -61,14 +61,14 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
               <span>😞 Negative:</span>
               <span className="font-bold">{data.negative_count}</span>
             </motion.p>
-            <div className="pt-2 mt-2 border-t border-purple-500/20">
-              <p className="text-purple-300 font-bold flex items-center justify-between">
+            <div className="pt-2 mt-2 border-t border-white/20">
+              <p className="text-gray-300 font-bold flex items-center justify-between">
                 <span>Average:</span>
                 <span>{data.avg_sentiment?.toFixed(3)}</span>
               </p>
             </div>
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/10 to-pink-600/10 rounded-xl blur-xl -z-10" />
+          <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-gray-400/10 rounded-xl blur-xl -z-10" />
         </motion.div>
       );
     }
@@ -152,21 +152,21 @@ const SentimentGraph = ({ timeRange, refreshKey }) => {
               value={chartData.reduce((sum, d) => sum + d.positive_count, 0)}
               label="Positive"
               icon="😊"
-              gradient="from-green-400 to-emerald-400"
+              gradient="from-white to-gray-400"
               duration={1.5}
             />
             <AnimatedCounter
               value={chartData.reduce((sum, d) => sum + d.neutral_count, 0)}
               label="Neutral"
               icon="😐"
-              gradient="from-gray-400 to-slate-400"
+              gradient="from-gray-300 to-gray-500"
               duration={1.5}
             />
             <AnimatedCounter
               value={chartData.reduce((sum, d) => sum + d.negative_count, 0)}
               label="Negative"
               icon="😞"
-              gradient="from-red-400 to-rose-400"
+              gradient="from-gray-400 to-gray-600"
               duration={1.5}
             />
           </div>

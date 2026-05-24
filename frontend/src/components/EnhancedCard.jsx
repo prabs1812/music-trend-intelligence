@@ -6,7 +6,7 @@ const EnhancedCard = ({
   className = '',
   hover = true,
   glow = false,
-  gradient = 'from-purple-500/10 to-pink-500/10',
+  gradient = 'from-white/10 to-gray-500/10',
   delay = 0
 }) => {
   return (
@@ -20,8 +20,8 @@ const EnhancedCard = ({
       <div className={`
         relative z-10
         glass-card rounded-2xl p-6
-        border border-purple-500/20
-        ${hover ? 'hover:border-purple-500/40 hover:shadow-2xl hover:shadow-purple-500/20' : ''}
+        border border-white/20
+        ${hover ? 'hover:border-white/40 hover:shadow-2xl hover:shadow-white/20' : ''}
         transition-all duration-300
         backdrop-blur-xl
         ${hover ? 'hover:scale-[1.02]' : ''}
@@ -37,7 +37,7 @@ const EnhancedCard = ({
 
       {/* Glow effect */}
       {glow && (
-        <div className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0 group-hover:opacity-30 blur-2xl transition-opacity duration-500 -z-10 rounded-2xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-white to-gray-400 opacity-0 group-hover:opacity-30 blur-2xl transition-opacity duration-500 -z-10 rounded-2xl"></div>
       )}
 
       {/* Depth shadow */}

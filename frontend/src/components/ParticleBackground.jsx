@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 
-const ParticleBackground = ({ density = 50, speed = 0.5, color = '#a855f7' }) => {
+const ParticleBackground = ({ density = 50, speed = 0.5, color = '#ffffff' }) => {
   const canvasRef = useRef(null);
   const particlesRef = useRef([]);
   const animationRef = useRef(null);
