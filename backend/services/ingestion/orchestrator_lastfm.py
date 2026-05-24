@@ -234,6 +234,16 @@ class IngestionOrchestrator:
         app_logger.info(f"Total events processed: {total_events}")
         app_logger.info("=" * 60)
 
+        # Calculate trend scores after ingestion
+        try:
+            app_logger.info("Calculating trend scores...")
+            from backend.services.analytics.trend_scorer_simple import trend_scorer
+            await trend_scorer.initialize()
+            await trend_scorer.calculate_trend_scores()
+            app_logger.info("Trend scoring completed")
+        except Exception as e:
+            app_logger.error(f"Trend scoring failed: {e}")
+
     async def start(self):
         """Start the ingestion orchestrator."""
         if self.running:
