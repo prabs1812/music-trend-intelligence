@@ -35,22 +35,13 @@ const TrendingArtists = ({ timeRange, refreshKey }) => {
   const fetchArtistImages = async (artistsList) => {
     const images = {};
 
-    // Fetch images in parallel for all artists
-    const imagePromises = artistsList.map(async (artist) => {
-      try {
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL || 'http://localhost:8000'}/api/artists/image/${encodeURIComponent(artist.name)}?size=medium`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          images[artist.name] = data.image_url;
-        }
-      } catch (err) {
-        console.error(`Failed to fetch image for ${artist.name}:`, err);
+    // Use image_url from API response directly instead of fetching separately
+    artistsList.forEach((artist) => {
+      if (artist.image_url) {
+        images[artist.name] = artist.image_url;
       }
     });
 
-    await Promise.all(imagePromises);
     setArtistImages(images);
   };
 

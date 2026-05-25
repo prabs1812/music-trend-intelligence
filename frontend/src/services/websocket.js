@@ -146,7 +146,15 @@ class WebSocketClient {
 }
 
 // Create WebSocket clients for different endpoints
-const WS_BASE_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
+// Convert HTTP API URL to WebSocket URL
+const getWebSocketURL = () => {
+  const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:8000/api/v1';
+  // Remove /api/v1 from the end and convert http(s) to ws(s)
+  const baseUrl = apiUrl.replace('/api/v1', '').replace('https://', 'wss://').replace('http://', 'ws://');
+  return baseUrl;
+};
+
+const WS_BASE_URL = getWebSocketURL();
 
 export const trendsWebSocket = new WebSocketClient(`${WS_BASE_URL}/ws/trends`);
 export const anomaliesWebSocket = new WebSocketClient(`${WS_BASE_URL}/ws/anomalies`);
